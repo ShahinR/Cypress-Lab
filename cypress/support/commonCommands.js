@@ -9,23 +9,22 @@ const uuid = () => Cypress._.random(0, 1e6)
 const RANDOM = uuid()
 const CUSTOM_NAME = `TestUser${RANDOM}`
 
-Cypress.Commands.add('front', (front) => {
-  cy.visit(Cypress.env('fo'), { responseTimeout: 10000 }, { followRedirect: true })
+Cypress.Commands.add('callFrontOffice', (front) => {
+  cy.visit('/', { responseTimeout: 10000 }, { followRedirect: true })
   cy.viewport(1280, 850)
   Cypress.config('responseTimeout', 80000)
  })
 
 Cypress.Commands.add('customInfo', (customInfo) => {
-
   // Add a random customer first name
   cy.get('#sign-username')
     .click()
-    .type(CUSTOM_NAME)
+    .type(CUSTOM_NAME, { delay: 200 })
 
   // Add a password for customer profile
   cy.get('#sign-password')
     .click()
-    .type(Cypress.env('custom_password'))
+    .type(Cypress.env('custom_password'), { delay: 200 })
   })
   
 Cypress.Commands.add('customerLogin', (customerLogin) => {  
@@ -34,23 +33,23 @@ Cypress.Commands.add('customerLogin', (customerLogin) => {
 
   cy.get('#sign-username')
     .click()
-    .type(CUSTOM_NAME)
+    .type(CUSTOM_NAME, { delay: 200 })
 
   // Add a password for
   cy.get('#sign-password')
     .click()
-    .type(Cypress.env('custom_password'))
+    .type(Cypress.env('custom_password'), { delay: 200 })
   cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click({force : true})
 
   // login
   cy.get('#login2').click({force : true})
   cy.get('#loginusername')
     .click({force: true})
-    .type(CUSTOM_NAME)
+    .type(CUSTOM_NAME, { delay: 200 })
 
   cy.get('#loginpassword')
     .click({force: true})
-    .type(Cypress.env('custom_password'))
+    .type(Cypress.env('custom_password'), { delay: 200 })
   
   // Login
   cy.get('#logInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary')
