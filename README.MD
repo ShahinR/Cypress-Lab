@@ -1,5 +1,5 @@
 # Introduction
-This repository is used to store all the automated tests and configurations for Manomano QA technical test (http://www.demoblaze.com).
+This repository is used to store all the automated tests and configurations forhttp://www.demoblaze.com which is an open api. 
 
 
 1. **User signs up in the platform**
