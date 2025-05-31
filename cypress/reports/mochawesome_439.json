@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-04-11T09:51:31.039Z",
+    "end": "2025-04-11T09:53:12.339Z",
+    "duration": 101300,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "2185cf21-e1e3-438b-a120-7f41f5be131e",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/addDeliveryAddress.js",
+      "file": "cypress/e2e/Standalones/FO/addDeliveryAddress.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "fb5e4ae8-7fce-4ca5-8bba-095bf8a55e18",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 57405,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/addDeliveryAddress.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "47679125-dd9b-44f6-8c7d-d9a8178fd667",
+              "parentUUID": "fb5e4ae8-7fce-4ca5-8bba-095bf8a55e18",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "47679125-dd9b-44f6-8c7d-d9a8178fd667"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 57405,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "d1fb6235-66d3-4cda-ac46-ea3590f00f4e",
+          "title": "This test will validate shipping addresse block based on it's store for",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new delivery address in a customer profile on macbook-15",
+              "fullTitle": "This test will validate shipping addresse block based on it's store for Add a new delivery address in a customer profile on macbook-15",
+              "timedOut": null,
+              "duration": 43251,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/addDeliveryAddress.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false\n    }, {\n      responseTimeout: 10000\n    }, {\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.visit(store + '/account', {\n      failOnStatusCode: false\n    }, {\n      responseTimeout: 10000\n    }, {\n      followRedirect: true\n    });\n    // Call address block\n    cy.validateElement('a[href=\"/account/address-book\"]');\n    cy.get('a[href=\"/account/address-book\"]').click({\n      force: true\n    });\n    cy.url().should('contain', '/account/address-book');\n    // Add a new addresse\n    cy.validateElement('.c-account-address-book > .c-btn');\n    cy.get('.c-account-address-book > .c-btn').click({\n      force: true\n    });\n    cy.validateElement('[class=\"c-account-form__item c-account-form__right\"]');\n    // Fill-up shipping address based on store and validate\n    cy.get('.c-account-form__item.c-account-form__right').then($ele => {\n      // Check for input field presence\n      if ($ele.find('.c-account-form__input').length > 0) {\n        cy.url().then(url => {\n          // Load shipping info based on the selected store\n          cy.fixture('shippingInfo.json').then(shippingInfo => {\n            let randomPhoneNumber, countryData;\n            if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n              countryData = shippingInfo.FRANCE;\n              randomPhoneNumber = generateRandomPhoneNumber(\"+336\");\n            } else if (url.includes(shippingInfo.SPAIN.storeUrl)) {\n              countryData = shippingInfo.SPAIN;\n              randomPhoneNumber = generateRandomPhoneNumber(\"+346\");\n            } else if (url.includes(shippingInfo.ITALY.storeUrl)) {\n              countryData = shippingInfo.ITALY;\n              randomPhoneNumber = generateRandomPhoneNumber(\"+396\");\n            } else {\n              throw new Error('Unable to determine store URL, check logs...');\n            }\n            fillAddressDetails(\"CypressFirstNameChanged\", \"CypressLastNameChanged\", randomPhoneNumber, `${countryData.address}`, `${countryData.city}`, `${countryData.postalCode}`);\n            cy.validateElement('.c-account-form__submit > .c-btn');\n            cy.get('.c-account-form__submit > .c-btn').click({\n              force: true\n            });\n            cy.url().should(\"contain\", \"/account/address-book?confirm=1\");\n            cy.validateElement('.c-form-message.c-form-message--success.c-form-message--fixed');\n          });\n        });\n      }\n    });\n    // Helper function to generate a random phone number\n    function generateRandomPhoneNumber(prefix) {\n      return `${prefix}${Math.floor(Math.random() * 1000000000).toString().padStart(9, '0')}`;\n    }\n    // Helper function to throw an error if needed\n    function throwError(message) {\n      throw new Error(message);\n    }\n  });\n});",
+              "err": {},
+              "uuid": "687458bf-7a05-466a-b811-66f554e3d7ce",
+              "parentUUID": "d1fb6235-66d3-4cda-ac46-ea3590f00f4e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "687458bf-7a05-466a-b811-66f554e3d7ce"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 43251,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

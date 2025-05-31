@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-04-14T15:39:16.394Z",
+    "end": "2025-04-14T15:40:36.687Z",
+    "duration": 80293,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "a4372870-bc59-422e-8731-4b6e8d2ba35d",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/validateHomePageHeaderFooter.js",
+      "file": "cypress/e2e/Standalones/FO/validateHomePageHeaderFooter.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "cc7d863f-515f-48b1-a074-4848d15c8c01",
+          "title": "Home page header && footer validation for: https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should validate the footer elements on macbook-15",
+              "fullTitle": "Home page header && footer validation for: https://www.preprod.laboutiqueofficielle.com Should validate the footer elements on macbook-15",
+              "timedOut": null,
+              "duration": 40718,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/validateHomePageHeaderFooter.js.mp4\"",
+              "code": "// First CMS block\nvalidateElementAndChildren('.c-reinsurance');\n// Newsletter block should be available and actionable\ncy.acceptCookies();\nvalidateElementAndChildren('.c-newsletter-form');\nvalidateElementAndChildren('.c-btn-with-input.c-btn-with-input--reverse');\ncy.get('.c-btn-with-input.c-btn-with-input--reverse').should('exist').as('parentElement');\ncy.get('@parentElement').find('> input').should('be.visible').click({\n  force: true\n}).and('have.focus').then(() => {\n  cy.get('@parentElement').type('dummy', {\n    delay: 100\n  }, {\n    force: true\n  });\n  cy.get('@parentElement').type('newsletter@lbo.com', {\n    delay: 200\n  }, {\n    force: true\n  });\n});\ncy.get('.c-btn.c-btn--reverse').should('not.have.class', 'c-btn--disabled');\n// Social medias icons && links\nvalidateElementAndChildren('.c-footer-social-network');\nconst storesToCheck = Cypress.env('urls');\nlet oneLinkFrance = Cypress.env('oneLinkFr');\nlet oneLinkRyses = Cypress.env('oneLinkRyses');\nvalidateElementAndChildren('.c-footer-app');\ncy.url().then(url => {\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    cy.get('.c-footer-app__list').should('have.length', 1).within(() => {\n      if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkFrance}\"]`).should('have.length', 2).each($el => {\n          const href = $el.prop('href');\n          cy.log(`FR link href: ${href}`);\n          // ✅ Assert href contains the expected value\n          expect(href).to.include(oneLinkFrance);\n          // Optional: check that it has target _blank if it opens a new tab\n          expect($el).to.have.attr('target', '_blank');\n        });\n      } else if (url.includes(shippingInfo.SPAIN.storeUrl || shippingInfo.ITALY.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkRyses}\"]`).should('have.length', 2).each($el => {\n          const href = $el.prop('href');\n          cy.log(`Ryses link href: ${href}`);\n          expect(href).to.include(oneLinkRyses);\n          expect($el).to.have.attr('target', '_blank');\n        });\n      } else {\n        throw new Error('Something went wrong with App Store AND/OR Google Play store links, please check your logs...');\n      }\n    });\n  });\n});\n// Footer sitemap / CMS\nvalidateElementAndChildren('.c-footer-sitemap');\ncy.get('.c-footer-sitemap a').should('have.length.gt', 0).each(($el, index) => {\n  const href = $el.attr('href');\n  console.log('Retrieved href/anchors links are: ' + href);\n  if (href) {\n    retryAnchorGetRequest(url, href);\n    if (index < cy.$$('.c-footer-sitemap a').length - 1) {}\n  }\n});",
+              "err": {},
+              "uuid": "6e3dfd03-9fa4-47ab-a3ad-7de97b5fb81a",
+              "parentUUID": "cc7d863f-515f-48b1-a074-4848d15c8c01",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6e3dfd03-9fa4-47ab-a3ad-7de97b5fb81a"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 40718,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "bc1993f5-1461-484e-977f-869352075475",
+          "title": "Home page header && footer validation for: https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should validate the footer elements on macbook-15",
+              "fullTitle": "Home page header && footer validation for: https://www.preprod.ryses.es Should validate the footer elements on macbook-15",
+              "timedOut": null,
+              "duration": 37442,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/validateHomePageHeaderFooter.js.mp4\"",
+              "code": "// First CMS block\nvalidateElementAndChildren('.c-reinsurance');\n// Newsletter block should be available and actionable\ncy.acceptCookies();\nvalidateElementAndChildren('.c-newsletter-form');\nvalidateElementAndChildren('.c-btn-with-input.c-btn-with-input--reverse');\ncy.get('.c-btn-with-input.c-btn-with-input--reverse').should('exist').as('parentElement');\ncy.get('@parentElement').find('> input').should('be.visible').click({\n  force: true\n}).and('have.focus').then(() => {\n  cy.get('@parentElement').type('dummy', {\n    delay: 100\n  }, {\n    force: true\n  });\n  cy.get('@parentElement').type('newsletter@lbo.com', {\n    delay: 200\n  }, {\n    force: true\n  });\n});\ncy.get('.c-btn.c-btn--reverse').should('not.have.class', 'c-btn--disabled');\n// Social medias icons && links\nvalidateElementAndChildren('.c-footer-social-network');\nconst storesToCheck = Cypress.env('urls');\nlet oneLinkFrance = Cypress.env('oneLinkFr');\nlet oneLinkRyses = Cypress.env('oneLinkRyses');\nvalidateElementAndChildren('.c-footer-app');\ncy.url().then(url => {\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    cy.get('.c-footer-app__list').should('have.length', 1).within(() => {\n      if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkFrance}\"]`).should('have.length', 2).each($el => {\n          const href = $el.prop('href');\n          cy.log(`FR link href: ${href}`);\n          // ✅ Assert href contains the expected value\n          expect(href).to.include(oneLinkFrance);\n          // Optional: check that it has target _blank if it opens a new tab\n          expect($el).to.have.attr('target', '_blank');\n        });\n      } else if (url.includes(shippingInfo.SPAIN.storeUrl || shippingInfo.ITALY.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkRyses}\"]`).should('have.length', 2).each($el => {\n          const href = $el.prop('href');\n          cy.log(`Ryses link href: ${href}`);\n          expect(href).to.include(oneLinkRyses);\n          expect($el).to.have.attr('target', '_blank');\n        });\n      } else {\n        throw new Error('Something went wrong with App Store AND/OR Google Play store links, please check your logs...');\n      }\n    });\n  });\n});\n// Footer sitemap / CMS\nvalidateElementAndChildren('.c-footer-sitemap');\ncy.get('.c-footer-sitemap a').should('have.length.gt', 0).each(($el, index) => {\n  const href = $el.attr('href');\n  console.log('Retrieved href/anchors links are: ' + href);\n  if (href) {\n    retryAnchorGetRequest(url, href);\n    if (index < cy.$$('.c-footer-sitemap a').length - 1) {}\n  }\n});",
+              "err": {},
+              "uuid": "cb6cbe4f-091a-4d4d-ba0f-fb340e194e52",
+              "parentUUID": "bc1993f5-1461-484e-977f-869352075475",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "cb6cbe4f-091a-4d4d-ba0f-fb340e194e52"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 37442,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

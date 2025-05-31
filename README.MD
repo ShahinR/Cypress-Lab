@@ -1,5 +1,12 @@
+# 🌲 Cypress Testing Stack
+
+Welcome to the **Cypress Testing Stack**!  
+This shared setup is designed to be reused across different client projects, providing a solid foundation for writing and running end-to-end (E2E) tests with Cypress.
+
+It also supports **Percy** for visual regression testing and is optimized for **headless test execution** in CI environments.
+
 # Introduction
-This repository is used to store all the automated tests and configurations forhttp://www.demoblaze.com which is an open api. 
+This repository is used to store all the automated tests and configurations for http://www.demoblaze.com which is an open api. 
 
 
 1. **User signs up in the platform**

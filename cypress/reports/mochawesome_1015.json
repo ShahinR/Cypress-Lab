@@ -1,0 +1,166 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-05-28T08:00:55.381Z",
+    "end": "2025-05-28T08:07:30.399Z",
+    "duration": 395018,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "bc21bb32-442a-43a5-afc6-1df808ad516a",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/checkoutBackOfficeVoucherAndCCPayment.js",
+      "file": "cypress/e2e/Standalones/FO/checkoutBackOfficeVoucherAndCCPayment.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "370bd593-3a4e-412e-9c94-1fbd321e75fc",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 54425,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucherAndCCPayment.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "f6cc096c-b30a-4fbd-bf89-040449c2d601",
+              "parentUUID": "370bd593-3a4e-412e-9c94-1fbd321e75fc",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f6cc096c-b30a-4fbd-bf89-040449c2d601"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 54425,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "a5e45b77-2536-4495-9929-e420dd9cb9df",
+          "title": "Validate checkout with a voucher created from BO && Combine it with another payment method",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Checkout a small amount order only with voucher",
+              "fullTitle": "Validate checkout with a voucher created from BO && Combine it with another payment method Checkout a small amount order only with voucher",
+              "timedOut": null,
+              "duration": 145734,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucherAndCCPayment.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin(store);\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    cy.addShippingAddress();\n    cy.visitRandomProductListing(store, {\n      priceRange: 'prices=5~15',\n      category: '/accessoires-c1?'\n    });\n    cy.AddProductToBasketForFilteredListing();\n    cy.basketValidation();\n    cy.selectShippingMethod();\n    cy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\n    cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n    cy.validateVoucherSelection();\n    cy.creditVoucherPayment();\n    cy.validateVoucherPaymentConfirmation();\n  });\n});",
+              "err": {},
+              "uuid": "cead2274-1e6a-4f12-bf07-6fbfa3f9ea4a",
+              "parentUUID": "a5e45b77-2536-4495-9929-e420dd9cb9df",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Checkout with voucher combining with another payment method",
+              "fullTitle": "Validate checkout with a voucher created from BO && Combine it with another payment method Checkout with voucher combining with another payment method",
+              "timedOut": null,
+              "duration": 185918,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucherAndCCPayment.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    cy.addShippingAddress();\n    cy.basketCreationProcess({\n      store\n    });\n    cy.basketValidation(store);\n    cy.selectShippingMethod();\n    cy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\n    cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n    cy.validateVoucherSelection();\n    cy.creditVoucherPayment();\n    cy.validateVoucherPaymentConfirmation();\n  });\n});",
+              "err": {},
+              "uuid": "b9006de3-0f38-47d5-8795-ee31f68a116a",
+              "parentUUID": "a5e45b77-2536-4495-9929-e420dd9cb9df",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "cead2274-1e6a-4f12-bf07-6fbfa3f9ea4a",
+            "b9006de3-0f38-47d5-8795-ee31f68a116a"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 331652,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

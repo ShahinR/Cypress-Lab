@@ -1,85 +1,124 @@
 /**
- * @author      <shahin.rastgar@gmail.com>
- * @copyright   Copyright (c) ShahinR
+ * @author      LBO DevTeam <s.rastgar@laboutiqueofficielle.com>
+ * @copyright   Copyright (c) Laboutiqueofficielle
  * @license     Proprietary
  */
 
-// Random customer name in order to have no duplication  
-const uuid = () => Cypress._.random(0, 1e6)
-const RANDOM = uuid()
-const CUSTOM_NAME = `TestUser${RANDOM}`
+// Import user's Page Object Model (PoM) classes
 
-Cypress.Commands.add('callFrontOffice', (front) => {
-  cy.visit('/', { responseTimeout: 10000 }, { followRedirect: true })
-  cy.viewport(1280, 850)
-  Cypress.config('responseTimeout', 80000)
- })
+Cypress.Commands.add("customInfo", () => {
+  // Generate random email
+  const generateRandomEmail = () => `clientcypresslbo${Cypress._.random(0, 1e6)}@gmail.com`
 
-Cypress.Commands.add('customInfo', (customInfo) => {
-  // Add a random customer first name
-  cy.get('#sign-username')
-    .click()
-    .type(CUSTOM_NAME, { delay: 200 })
-
-  // Add a password for customer profile
-  cy.get('#sign-password')
-    .click()
-    .type(Cypress.env('custom_password'), { delay: 200 })
+  // Update login.json with new user credentials
+  cy.readFile("cypress/fixtures/login.json").then(data => {
+    data.custom_email = generateRandomEmail()
+    data.custom_password = "0@x?Ci4?0"
+    return cy.writeFile("cypress/fixtures/login.json", data)
   })
-  
-Cypress.Commands.add('customerLogin', (customerLogin) => {  
-  // Add a random customer first name
-  cy.get('#signin2').click({force : true})
 
-  cy.get('#sign-username')
-    .click()
-    .type(CUSTOM_NAME, { delay: 200 })
+  // Set custom personal information
+  cy.get("[data-cy=date] .c-date__day select").select("23")
+  cy.get("[data-cy=date] .c-date__month select").select("10")
+  cy.get("[data-cy=date] .c-date__year select").select("1984")
 
-  // Add a password for
-  cy.get('#sign-password')
-    .click()
-    .type(Cypress.env('custom_password'), { delay: 200 })
-  cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click({force : true})
+  // Set last name
+  cy.delayedType("[data-cy=customer-firstname]", "CypressFirstName")
 
-  // login
-  cy.get('#login2').click({force : true})
-  cy.get('#loginusername')
-    .click({force: true})
-    .type(CUSTOM_NAME, { delay: 200 })
+  // Set first name
+  cy.delayedType("[data-cy=customer-name]", "CypressLastName")
 
-  cy.get('#loginpassword')
-    .click({force: true})
-    .type(Cypress.env('custom_password'), { delay: 200 })
-  
-  // Login
-  cy.get('#logInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary')
-    .should('exist')
-    .should('be.visible')
-    .should('be.enabled')
-    .and('have.css', 'text-decoration')
-  
-  cy.get('#logInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click({force : true})
-  cy.wait(2000)
+  // Use credentials from login.json to register new client
+  cy.readFile("cypress/fixtures/login.json").then(user => {
+    cy.delayedType("[data-cy=customer-email]", user.custom_email)
+    cy.delayedType("[data-cy=customer-password]", user.custom_password)
+  })
 })
 
-Cypress.Commands.add('chaiAssertion', (chaiAssertion)=> {
-  // Chai library insertion
-  var chai = require('chai');  
-  var assert = chai.assert;    // Using Assert style
-  var expect = chai.expect;    // Using Expect style
-  var should = chai.should();  // Using Should style
+Cypress.Commands.add("acceptCookies", (acceptCookies) => {
+  cy.wait(3000) // Wait for 5 seconds for the cookies pop-up to appear
+  cy.get("body").then(($ele) => {
+    switch (true) {
+      case $ele.find("#popupFullConsent", { timeout: 10000 }).length > 0:
+        cy.get("#popupFullConsent").click({ force: true })
+        break
+      case $ele.find(".cookiebanner__flex", { timeout: 10000 }).length > 0:
+        cy.get(".cookiebanner__flex").click({ force: true })
+        break
+      default:
+        cy.log("Cookies are confirmed")
+        break
+    }
+  })
 })
 
-Cypress.Commands.add("validateDomElementsAssertion", function ($elem) {
+Cypress.Commands.add("customLogin", () => {
+  const loginPage = new UserLoginPage()
+  cy.validateElement("[data-cy=header-tool--account]")
+  cy.get("[data-cy=header-tool--account]").first().click()
+
+  // Retrieve credentials and log in from fixture
+  cy.readFile("cypress/fixtures/login.json").then((credentials) => {
+    loginPage.fillUserName(credentials.custom_email)
+    loginPage.fillPassword(credentials.custom_password)
+    loginPage.submit()
+
+    // Iterative approach to handle submit button disappearance
+    let retryCount = 0
+    const maxRetries = 3
+
+    function waitForSubmitButton() {
+      cy.get("body").then(($body) => {
+        const submitElementExists = $body.find("[data-cy=submit]").length > 0
+        if (submitElementExists && retryCount < maxRetries) {
+          retryCount++
+          cy.validateElement("[data-cy=submit]")
+          cy.get("[data-cy=submit]").click({ force: true })
+          cy.wait(1000)
+          waitForSubmitButton()
+        } else if (!submitElementExists) {
+          cy.log("Success: the client is already logged-in")
+        } else {
+          cy.log("Warning: Maximum retries reached for login process")
+        }
+      })
+    }
+    waitForSubmitButton()
+
+    // Ensure no error message exists
+    cy.get(".c-form-message--error").should("not.exist")
+
+    // Mock API interception
+    cy.intercept({
+      method: "GET",
+      url: "**/v4/secure/account/addresses",
+    }).as("securedAddressesApiResponse")
+  })
+})
+
+Cypress.Commands.add("validateElement", function ($elem) {
   cy.get($elem, { timeout: 30000 })
     .should("exist")
-    .should("have.css", "font-family", "text-decoration")
+    .should("have.css", "font-family")
     .and("have.length.at.least", 1)
 })
 
-Cypress.Commands.add('IgnoreUncaughtExceptions', (IgnoreUncaughtExceptions) => {
-  Cypress.on('uncaught:exception', (err, runnable) => {
-    return false
-  })
+Cypress.Commands.add("waitForFullyLoad", () => {
+  cy.get("body", { timeout: 20000 })
+    .should("be.visible")
+    .should("have.length", 1)
+    .should("not.be.empty")
+  cy.window().its("document.readyState").should("eq", "complete")
 })
+
+Cypress.Commands.add("chaiAssertion", (chaiAssertion) => {
+  // Chai library insertion
+  var chai = require("chai")
+  var assert = chai.assert // Using Assert style
+  var expect = chai.expect // Using Expect style
+  var should = chai.should() // Using Should style
+})
+
+
+
 

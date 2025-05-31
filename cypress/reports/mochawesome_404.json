@@ -1,0 +1,108 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-03-24T11:03:31.134Z",
+    "end": "2025-03-24T11:05:25.929Z",
+    "duration": 114795,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "20bcefb1-9bda-4381-a27a-335f11930ddd",
+      "title": "",
+      "fullFile": "cypress/e2e/homePageSearchBarValidation.js",
+      "file": "cypress/e2e/homePageSearchBarValidation.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "cb9286fb-6129-4037-afe4-fe588e8f30c5",
+          "title": "Testing home page search bar queries",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Search for search queries and expect no HTTP errors",
+              "fullTitle": "Testing home page search bar queries Search for search queries and expect no HTTP errors",
+              "timedOut": null,
+              "duration": 114752,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/homePageSearchBarValidation.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    // Define search queries array\n    let searchQueries = ['bleu', 'LBO', 'batman', 'nike', 'ike', 'N-ke', 'WhatTHEheck323232', 'ttttt----'];\n    // Iterate over each element of the priceRange && productListing arrays\n    searchQueries.forEach(query => {\n      cy.visit(store, {\n        failOnStatusCode: false\n      }, {\n        responseTimeout: 10000\n      }, {\n        followRedirect: true\n      });\n      const textToType = `${query}`;\n      // Make sure algolia.net is called\n      cy.validateElement('[role=\"combobox\"] > input').detachedDomElement('[role=\"combobox\"] > input').clear({\n        force: true\n      }).detachedDomElement('[role=\"combobox\"] > input').click({\n        force: true\n      }).then($input => {\n        Cypress._.each(textToType.split(''), char => {\n          cy.wrap($input).type(char, {\n            delay: 200\n          });\n        });\n      }).waitForFullyLoad(store);\n      // Check if there are any captured interceptions\n      let capturedInterceptions = [];\n      cy.wait(2000).then(() => {\n        if (Array.isArray(capturedInterceptions) && capturedInterceptions.length > 0) {\n          capturedInterceptions.forEach(interception => {\n            expect(interception.response.statusCode).to.be.oneOf([200, 302]);\n          });\n        } else {\n          cy.log(\"No interceptions were captured within the specified timeout.\");\n        }\n      });\n      // Make an HTTP request to the search URL && check the response status code\n      cy.request('GET', `/search/${query}`).then(response => {\n        expect(response.status).to.not.be.oneOf([400, 404, 500, 503]);\n      }).wait(1000);\n    });\n  });\n});",
+              "err": {},
+              "uuid": "c6fcb8c6-c8c7-4587-afce-f8ce78d76fcc",
+              "parentUUID": "cb9286fb-6129-4037-afe4-fe588e8f30c5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "c6fcb8c6-c8c7-4587-afce-f8ce78d76fcc"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 114752,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

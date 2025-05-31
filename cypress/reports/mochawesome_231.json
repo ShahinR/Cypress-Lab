@@ -1,0 +1,185 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-03-12T13:26:38.430Z",
+    "end": "2025-03-12T13:30:50.387Z",
+    "duration": 251957,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b8ade07b-0118-4581-9fed-e0d8009003f3",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/validateHomePageHeaderFooter.js",
+      "file": "cypress/e2e/Standalones/FO/validateHomePageHeaderFooter.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "5ace71a9-47d3-4774-8679-72ad59fa18b8",
+          "title": "Home page header && footer validation for: https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should validate the header elements on macbook-15",
+              "fullTitle": "Home page header && footer validation for: https://www.preprod.laboutiqueofficielle.com Should validate the header elements on macbook-15",
+              "timedOut": null,
+              "duration": 12946,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/validateHomePageHeaderFooter.js.mp4\"",
+              "code": "// The LBO logo and its corresponding href attributes\nvalidateElementAndChildren('[class=\"nuxt-link-exact-active nuxt-link-active\"]');\ncy.get('.nuxt-link-exact-active.nuxt-link-active').invoke('attr', 'href').then(hrefValue => {\n  console.log('The href value is:', hrefValue);\n  expect(hrefValue).to.equal('/');\n  cy.request(hrefValue).its('status').should('eq', 200);\n});\n// Search bar\nvalidateElementAndChildren('[class=\"autosuggest c-btn-with-input\"]');\n// Help\nconst storesToCheck = Cypress.env('urls');\ncy.validateElement('[class=\"c-header-tools__link\"]');\ncy.url().then(url => {\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    const storesToCheck = [shippingInfo.FRANCE.storeUrl, shippingInfo.SPAIN.storeUrl, shippingInfo.ITALY.storeUrl];\n    const hrefAssertions = {\n      [storesToCheck[0]]: {\n        expected: '/t/faq',\n        lang: 'FR'\n      },\n      [storesToCheck[1]]: {\n        expected: '/t/ayuda',\n        lang: 'ES'\n      },\n      [storesToCheck[2]]: {\n        expected: '/t/assistenza',\n        lang: 'IT'\n      }\n    };\n    // Mapping through shippingInfo.json\n    const matchingStore = Object.keys(hrefAssertions).find(store => url.includes(store));\n    if (matchingStore) {\n      const {\n        expected,\n        lang\n      } = hrefAssertions[matchingStore];\n      if (expected) {\n        cy.get('[class=\"c-header-tools__link\"]').invoke('attr', 'href').then(hrefValue => {\n          expect(hrefValue).to.equal(expected);\n          const lastSlashIndex = url.lastIndexOf('/');\n          if (lastSlashIndex !== -1 && lastSlashIndex === url.length - 1) {\n            url = url.substring(0, lastSlashIndex);\n            cy.request(url + hrefValue).its('status').should('eq', 200);\n          }\n        });\n      } else {\n        // TO KEEP : logic for Italy or other new stores\n      }\n    } else {\n      throw new Error('Something went wrong with App Store AND/OR Google Play store links, please check your logs...');\n    }\n  });\n});\n// Header tools list: Login icon, Wishlist, Shopping Cart, and switch between stores\nvalidateElementAndChildren(\"[data-cy=header-tool--account]\");\n// Login\ncy.visit(url, {\n  failOnStatusCode: false\n}, {\n  responseTimeout: 10000\n}, {\n  followRedirect: true\n});\n// Wishlist\nvalidateElementAndChildren('.c-header-tools__item--favorite');\ncy.get('.c-header-tools__list').find('a').each($link => {\n  const href = $link.attr('href');\n  expect(href).to.exist;\n  expect(href).to.not.be.empty;\n  retryAnchorGetRequest(url, href);\n});\n// Switch between stores\ncy.get('[class=\"c-international-switch__list\"]').then($currentItem => {\n  validateElementAndChildren('[data-cy=\"lang-link\"]');\n  cy.get('[data-cy=\"lang-link\"]').click();\n  cy.get('.c-header-tools__item--lang').click();\n});\n// Obtain href/anchor links for stores  \ncy.get('.c-dropdown-menu__panel', {\n  force: true\n}).find('a[href$=\".fr\"], a[href$=\".es\"], a[href$=\".it\"]').each(($link, index, $list) => {\n  const href = $link.attr('href');\n  cy.request(href).then(response => {\n    expect(response.status).to.eq(200);\n    expect(response.headers['content-type']).to.include('text/html');\n  });\n});",
+              "err": {},
+              "uuid": "dec6e15f-6859-425d-93c8-731afe98b48a",
+              "parentUUID": "5ace71a9-47d3-4774-8679-72ad59fa18b8",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should validate the footer elements on macbook-15",
+              "fullTitle": "Home page header && footer validation for: https://www.preprod.laboutiqueofficielle.com Should validate the footer elements on macbook-15",
+              "timedOut": null,
+              "duration": 110154,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/validateHomePageHeaderFooter.js.mp4\"",
+              "code": "// First CMS block\nvalidateElementAndChildren('.c-reinsurance');\n// Newsletter block should be available and actionable\ncy.acceptCookies();\nvalidateElementAndChildren('.c-newsletter-form');\nvalidateElementAndChildren('.c-btn-with-input.c-btn-with-input--reverse');\ncy.get('.c-btn-with-input.c-btn-with-input--reverse').should('exist').as('parentElement');\ncy.get('@parentElement').find('> input').should('be.visible').click({\n  force: true\n}).and('have.focus').then(() => {\n  cy.get('@parentElement').type('dummy', {\n    delay: 100\n  }, {\n    force: true\n  });\n  cy.get('@parentElement').type('newsletter@lbo.com', {\n    delay: 200\n  }, {\n    force: true\n  });\n});\ncy.get('.c-btn.c-btn--reverse').should('not.have.class', 'c-btn--disabled');\n// Social medias icons && links\nvalidateElementAndChildren('.c-footer-social-network');\nconst storesToCheck = Cypress.env('urls');\nlet oneLinkFrance = Cypress.env('oneLinkFr');\nlet oneLinkRyses = Cypress.env('oneLinkRyses');\nvalidateElementAndChildren('.c-footer-app');\ncy.url().then(url => {\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    cy.get('.c-footer-app__list').should('have.length', 1).within(() => {\n      // FR\n      if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkFrance}\"]`).should('have.length', 2).each($el => {\n          cy.wrap($el).should('be.visible').click({\n            force: true\n          }).should('not.have.attr', 'disabled');\n        });\n        // Ryses\n      } else if (url.includes(shippingInfo.SPAIN.storeUrl || shippingInfo.ITALY.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkRyses}\"]`).should('have.length', 2).each($el => {\n          cy.wrap($el).should('be.visible').click({\n            force: true\n          }).should('not.have.attr', 'disabled');\n        });\n      } else {\n        throw new Error('Something went wrong with App Store AND/OR Google Play store links, please check your logs...');\n      }\n    });\n  });\n});\n// Footer sitemap / CMS\nvalidateElementAndChildren('.c-footer-sitemap');\ncy.get('.c-footer-sitemap a').should('have.length.gt', 0).each(($el, index) => {\n  const href = $el.attr('href');\n  console.log('Retrieved href/anchors links are: ' + href);\n  if (href) {\n    retryAnchorGetRequest(url, href);\n    if (index < cy.$$('.c-footer-sitemap a').length - 1) {\n      cy.wait(2000);\n    }\n  }\n});",
+              "err": {},
+              "uuid": "5324e0b7-a0c1-40b3-b06f-d75998c99cfd",
+              "parentUUID": "5ace71a9-47d3-4774-8679-72ad59fa18b8",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "dec6e15f-6859-425d-93c8-731afe98b48a",
+            "5324e0b7-a0c1-40b3-b06f-d75998c99cfd"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 123100,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "0adca627-aa3c-4a01-b7eb-6dbffd79ad46",
+          "title": "Home page header && footer validation for: https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should validate the header elements on macbook-15",
+              "fullTitle": "Home page header && footer validation for: https://www.preprod.ryses.es Should validate the header elements on macbook-15",
+              "timedOut": null,
+              "duration": 12172,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/validateHomePageHeaderFooter.js.mp4\"",
+              "code": "// The LBO logo and its corresponding href attributes\nvalidateElementAndChildren('[class=\"nuxt-link-exact-active nuxt-link-active\"]');\ncy.get('.nuxt-link-exact-active.nuxt-link-active').invoke('attr', 'href').then(hrefValue => {\n  console.log('The href value is:', hrefValue);\n  expect(hrefValue).to.equal('/');\n  cy.request(hrefValue).its('status').should('eq', 200);\n});\n// Search bar\nvalidateElementAndChildren('[class=\"autosuggest c-btn-with-input\"]');\n// Help\nconst storesToCheck = Cypress.env('urls');\ncy.validateElement('[class=\"c-header-tools__link\"]');\ncy.url().then(url => {\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    const storesToCheck = [shippingInfo.FRANCE.storeUrl, shippingInfo.SPAIN.storeUrl, shippingInfo.ITALY.storeUrl];\n    const hrefAssertions = {\n      [storesToCheck[0]]: {\n        expected: '/t/faq',\n        lang: 'FR'\n      },\n      [storesToCheck[1]]: {\n        expected: '/t/ayuda',\n        lang: 'ES'\n      },\n      [storesToCheck[2]]: {\n        expected: '/t/assistenza',\n        lang: 'IT'\n      }\n    };\n    // Mapping through shippingInfo.json\n    const matchingStore = Object.keys(hrefAssertions).find(store => url.includes(store));\n    if (matchingStore) {\n      const {\n        expected,\n        lang\n      } = hrefAssertions[matchingStore];\n      if (expected) {\n        cy.get('[class=\"c-header-tools__link\"]').invoke('attr', 'href').then(hrefValue => {\n          expect(hrefValue).to.equal(expected);\n          const lastSlashIndex = url.lastIndexOf('/');\n          if (lastSlashIndex !== -1 && lastSlashIndex === url.length - 1) {\n            url = url.substring(0, lastSlashIndex);\n            cy.request(url + hrefValue).its('status').should('eq', 200);\n          }\n        });\n      } else {\n        // TO KEEP : logic for Italy or other new stores\n      }\n    } else {\n      throw new Error('Something went wrong with App Store AND/OR Google Play store links, please check your logs...');\n    }\n  });\n});\n// Header tools list: Login icon, Wishlist, Shopping Cart, and switch between stores\nvalidateElementAndChildren(\"[data-cy=header-tool--account]\");\n// Login\ncy.visit(url, {\n  failOnStatusCode: false\n}, {\n  responseTimeout: 10000\n}, {\n  followRedirect: true\n});\n// Wishlist\nvalidateElementAndChildren('.c-header-tools__item--favorite');\ncy.get('.c-header-tools__list').find('a').each($link => {\n  const href = $link.attr('href');\n  expect(href).to.exist;\n  expect(href).to.not.be.empty;\n  retryAnchorGetRequest(url, href);\n});\n// Switch between stores\ncy.get('[class=\"c-international-switch__list\"]').then($currentItem => {\n  validateElementAndChildren('[data-cy=\"lang-link\"]');\n  cy.get('[data-cy=\"lang-link\"]').click();\n  cy.get('.c-header-tools__item--lang').click();\n});\n// Obtain href/anchor links for stores  \ncy.get('.c-dropdown-menu__panel', {\n  force: true\n}).find('a[href$=\".fr\"], a[href$=\".es\"], a[href$=\".it\"]').each(($link, index, $list) => {\n  const href = $link.attr('href');\n  cy.request(href).then(response => {\n    expect(response.status).to.eq(200);\n    expect(response.headers['content-type']).to.include('text/html');\n  });\n});",
+              "err": {},
+              "uuid": "70f81704-f28c-4ba2-851a-22425b243450",
+              "parentUUID": "0adca627-aa3c-4a01-b7eb-6dbffd79ad46",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should validate the footer elements on macbook-15",
+              "fullTitle": "Home page header && footer validation for: https://www.preprod.ryses.es Should validate the footer elements on macbook-15",
+              "timedOut": null,
+              "duration": 112636,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/validateHomePageHeaderFooter.js.mp4\"",
+              "code": "// First CMS block\nvalidateElementAndChildren('.c-reinsurance');\n// Newsletter block should be available and actionable\ncy.acceptCookies();\nvalidateElementAndChildren('.c-newsletter-form');\nvalidateElementAndChildren('.c-btn-with-input.c-btn-with-input--reverse');\ncy.get('.c-btn-with-input.c-btn-with-input--reverse').should('exist').as('parentElement');\ncy.get('@parentElement').find('> input').should('be.visible').click({\n  force: true\n}).and('have.focus').then(() => {\n  cy.get('@parentElement').type('dummy', {\n    delay: 100\n  }, {\n    force: true\n  });\n  cy.get('@parentElement').type('newsletter@lbo.com', {\n    delay: 200\n  }, {\n    force: true\n  });\n});\ncy.get('.c-btn.c-btn--reverse').should('not.have.class', 'c-btn--disabled');\n// Social medias icons && links\nvalidateElementAndChildren('.c-footer-social-network');\nconst storesToCheck = Cypress.env('urls');\nlet oneLinkFrance = Cypress.env('oneLinkFr');\nlet oneLinkRyses = Cypress.env('oneLinkRyses');\nvalidateElementAndChildren('.c-footer-app');\ncy.url().then(url => {\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    cy.get('.c-footer-app__list').should('have.length', 1).within(() => {\n      // FR\n      if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkFrance}\"]`).should('have.length', 2).each($el => {\n          cy.wrap($el).should('be.visible').click({\n            force: true\n          }).should('not.have.attr', 'disabled');\n        });\n        // Ryses\n      } else if (url.includes(shippingInfo.SPAIN.storeUrl || shippingInfo.ITALY.storeUrl)) {\n        cy.get(`a[href*=\"${oneLinkRyses}\"]`).should('have.length', 2).each($el => {\n          cy.wrap($el).should('be.visible').click({\n            force: true\n          }).should('not.have.attr', 'disabled');\n        });\n      } else {\n        throw new Error('Something went wrong with App Store AND/OR Google Play store links, please check your logs...');\n      }\n    });\n  });\n});\n// Footer sitemap / CMS\nvalidateElementAndChildren('.c-footer-sitemap');\ncy.get('.c-footer-sitemap a').should('have.length.gt', 0).each(($el, index) => {\n  const href = $el.attr('href');\n  console.log('Retrieved href/anchors links are: ' + href);\n  if (href) {\n    retryAnchorGetRequest(url, href);\n    if (index < cy.$$('.c-footer-sitemap a').length - 1) {\n      cy.wait(2000);\n    }\n  }\n});",
+              "err": {},
+              "uuid": "4149c107-2da6-4545-9b24-0a8f509fee8b",
+              "parentUUID": "0adca627-aa3c-4a01-b7eb-6dbffd79ad46",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "70f81704-f28c-4ba2-851a-22425b243450",
+            "4149c107-2da6-4545-9b24-0a8f509fee8b"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 124808,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

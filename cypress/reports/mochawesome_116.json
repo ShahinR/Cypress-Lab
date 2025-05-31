@@ -1,0 +1,342 @@
+{
+  "stats": {
+    "suites": 7,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-03-04T18:34:02.461Z",
+    "end": "2025-03-04T18:42:13.945Z",
+    "duration": 491484,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "fdb09c0e-5863-43ac-aa2f-9ce57fb44035",
+      "title": "",
+      "fullFile": "cypress/e2e/Scenarios/runCustomerReturnOrderPartiallyWithFullRefund.js",
+      "file": "cypress/e2e/Scenarios/runCustomerReturnOrderPartiallyWithFullRefund.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "bc8ea9eb-dd93-4825-bdf2-bfd626c300cd",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 54877,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "f22202fb-6e31-4f55-aa0b-6fced9c12504",
+              "parentUUID": "bc8ea9eb-dd93-4825-bdf2-bfd626c300cd",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f22202fb-6e31-4f55-aa0b-6fced9c12504"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 54877,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "97c88bd6-4766-405e-98be-e9bacb27ad19",
+          "title": "This test will validate hipay frictionless checkout process for https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Go to products listing with a price higher than 100 euros on macbook-15",
+              "fullTitle": "This test will validate hipay frictionless checkout process for https://www.preprod.laboutiqueofficielle.com Go to products listing with a price higher than 100 euros on macbook-15",
+              "timedOut": null,
+              "duration": 158925,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "// Checkout process\ncy.addShippingAddress();\ncy.acceptCookies();\nfor (let i = 0; i < 2; i++) {\n  cy.addProductToBasket();\n  cy.productSizer();\n}\n// Promotion code block\ncy.get('body').scrollIntoView({\n  offset: {\n    top: 0,\n    left: 0\n  }\n});\ncy.get('[data-cy=basket-link]').scrollIntoView().click({\n  force: true\n});\ncy.url().should('include', '/checkout/basket');\ncy.validateElement('.c-shopping-cart-promo-code__toggle > button');\ncy.get('.c-shopping-cart-promo-code__toggle > button').click({\n  force: true\n});\ncy.validateElement('#default');\ncy.get('#default').click({\n  force: true\n}).clear();\ncy.get('#default').click({\n  force: true\n}).type(Cypress.env('defaultPromoCode'));\ncy.validateElement('.c-btn.c-btn--accent.c-btn--small');\ncy.get('.c-btn.c-btn--accent.c-btn--small').click({\n  force: true\n});\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\n// Make sure the promotion code is applied successfully\ncy.get('body').then(shipping => {\n  const promoCodeAppliedSuccessfully = shipping.find('.c-shopping-cart-promo').length > 0;\n  switch (true) {\n    case promoCodeAppliedSuccessfully:\n      cy.validateElement('.c-shopping-cart-promo');\n      console.log('Promotion code is applied successfully');\n      break;\n    default:\n      throw new Error('Promotion code is not applied successfully, please check your logs...');\n  }\n});\n// API calls capture\ncy.intercept({\n  method: 'GET',\n  url: '**/v4/secure/checkout/payments/available/**'\n}).as('basketDataValidation');\ncy.intercept({\n  method: 'POST',\n  url: 'https://stage-data.hipay.com/checkout-data'\n}).as('hipayDataValidation');\n// Continue with the checkout process\ncy.validateElement('[data-cy=validate-basket]').get('[data-cy=\"validate-basket\"]').first().click({\n  force: true\n});\ncy.selectShippingMethod();\n// Credit card payment and purchase validation\ncy.frictionlessCreditCardPayment();\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\ncy.validateElement('.c-confirm__header').validateElement('.c-confirm__title').validateElement('.c-confirm__subtitle').validateElement('.c-confirm-shipping');\ncy.visit(url + '/account/history');\ncy.get(':nth-child(1) > .c-order-item', {\n  timeout: 20000\n}).should('have.length.gt', 0);",
+              "err": {},
+              "uuid": "3896a044-1cb9-4d4f-ab2b-9c5cd4d09c60",
+              "parentUUID": "97c88bd6-4766-405e-98be-e9bacb27ad19",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "3896a044-1cb9-4d4f-ab2b-9c5cd4d09c60"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 158925,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "fa5fa79c-e077-4010-85e5-4c52d27c3fae",
+          "title": "This test will validate hipay frictionless checkout process for https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Go to products listing with a price higher than 100 euros on macbook-15",
+              "fullTitle": "This test will validate hipay frictionless checkout process for https://www.preprod.ryses.es Go to products listing with a price higher than 100 euros on macbook-15",
+              "timedOut": null,
+              "duration": 158344,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "// Checkout process\ncy.addShippingAddress();\ncy.acceptCookies();\nfor (let i = 0; i < 2; i++) {\n  cy.addProductToBasket();\n  cy.productSizer();\n}\n// Promotion code block\ncy.get('body').scrollIntoView({\n  offset: {\n    top: 0,\n    left: 0\n  }\n});\ncy.get('[data-cy=basket-link]').scrollIntoView().click({\n  force: true\n});\ncy.url().should('include', '/checkout/basket');\ncy.validateElement('.c-shopping-cart-promo-code__toggle > button');\ncy.get('.c-shopping-cart-promo-code__toggle > button').click({\n  force: true\n});\ncy.validateElement('#default');\ncy.get('#default').click({\n  force: true\n}).clear();\ncy.get('#default').click({\n  force: true\n}).type(Cypress.env('defaultPromoCode'));\ncy.validateElement('.c-btn.c-btn--accent.c-btn--small');\ncy.get('.c-btn.c-btn--accent.c-btn--small').click({\n  force: true\n});\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\n// Make sure the promotion code is applied successfully\ncy.get('body').then(shipping => {\n  const promoCodeAppliedSuccessfully = shipping.find('.c-shopping-cart-promo').length > 0;\n  switch (true) {\n    case promoCodeAppliedSuccessfully:\n      cy.validateElement('.c-shopping-cart-promo');\n      console.log('Promotion code is applied successfully');\n      break;\n    default:\n      throw new Error('Promotion code is not applied successfully, please check your logs...');\n  }\n});\n// API calls capture\ncy.intercept({\n  method: 'GET',\n  url: '**/v4/secure/checkout/payments/available/**'\n}).as('basketDataValidation');\ncy.intercept({\n  method: 'POST',\n  url: 'https://stage-data.hipay.com/checkout-data'\n}).as('hipayDataValidation');\n// Continue with the checkout process\ncy.validateElement('[data-cy=validate-basket]').get('[data-cy=\"validate-basket\"]').first().click({\n  force: true\n});\ncy.selectShippingMethod();\n// Credit card payment and purchase validation\ncy.frictionlessCreditCardPayment();\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\ncy.validateElement('.c-confirm__header').validateElement('.c-confirm__title').validateElement('.c-confirm__subtitle').validateElement('.c-confirm-shipping');\ncy.visit(url + '/account/history');\ncy.get(':nth-child(1) > .c-order-item', {\n  timeout: 20000\n}).should('have.length.gt', 0);",
+              "err": {},
+              "uuid": "6cae5146-d037-408a-9799-038d4af34a1c",
+              "parentUUID": "fa5fa79c-e077-4010-85e5-4c52d27c3fae",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6cae5146-d037-408a-9799-038d4af34a1c"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 158344,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "7fba8c88-fbf0-4647-a0b5-997c523d6328",
+          "title": "Order shippment process simulation (DBMS)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Call the pre-production DBMS and execute the necessary SQL commands",
+              "fullTitle": "Order shippment process simulation (DBMS) Call the pre-production DBMS and execute the necessary SQL commands",
+              "timedOut": null,
+              "duration": 2238,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "// Retrive the client's orderId from DBMS\nconst getClientOrderId = cy.task(\"queryDb\", `select c2.commande_id from lbov4.commande c2 where c2.client_email = '${this.data.custom_email}' order by c2.commande_date_ajout`).then(Indexcount => {\n  // Extract all linked orderIDs this user\n  const orderIds = Indexcount.map(record => record[\"commande_id\"]);\n  // Log the resulting array for further debugging aspects\n  cy.log(`Retrieved order IDs: ${orderIds.join(\", \")}`);\n  // Loop through each orderID\n  orderIds.forEach(orderId => {\n    const updateInvoiceTable = cy.task(\"queryDb\", `INSERT INTO lbov4.facture(commande_id, date) VALUES ('${orderId}', NOW())`).then(() => {\n      cy.task(\"queryDb\", `SELECT * FROM facture WHERE commande_id = '${orderId}'`).then(result => {\n        expect(result.length).to.be.greaterThan(0);\n        expect(result[0].commande_id).to.eq(orderId);\n      });\n    });\n    // Apply necessaire order data modifications\n    const updateOrderTable = cy.task(\"queryDb\", `UPDATE lbov4.commande c\n          LEFT JOIN lbov4.commande_produit cp ON lbov4.c.commande_id = lbov4.cp.commande_id\n          LEFT JOIN lbov4.commande_produit_attribut cpa ON lbov4.cp.commande_produit_id = lbov4.cpa.commande_produit_id\n        SET lbov4.c.commande_statut_id = 4,\n            c.commande_facture_numero = (SELECT MAX(facture_id) FROM lbov4.facture),\n            lbov4.c.commande_facture_date = CURDATE(),\n            lbov4.cp.quantity_prepared = lbov4.cp.produit_quantite,\n            lbov4.cpa.quantity_prepared = lbov4.cpa.produit_option_valeur_quantite,\n            lbov4.c.commande_livraison_colis = '6A16163204582',\n            lbov4.c.last_tracking_status = 'DELIVERED',\n            lbov4.c.last_tracking_date = CURDATE()\n        WHERE lbov4.c.commande_id = '${orderId}'`).then(() => {\n      cy.task(\"queryDb\", `SELECT * FROM commande WHERE commande_id = '${orderIds}'`).then(result => {\n        expect(result).to.have.lengthOf(1);\n        expect(result[0].commande_statut_id).to.equal(4);\n        expect(result[0].commande_livraison_colis).to.equal(\"6A16163204582\");\n        expect(result[0].last_tracking_status).to.equal(\"DELIVERED\");\n      });\n    });\n  });\n});",
+              "err": {},
+              "uuid": "39432673-da5b-4d81-8cc2-afe8e28aa45e",
+              "parentUUID": "7fba8c88-fbf0-4647-a0b5-997c523d6328",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "39432673-da5b-4d81-8cc2-afe8e28aa45e"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2238,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "eeb70f40-baa8-4fd6-ac3a-8ddecffc77d2",
+          "title": "Customer order return process https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Customer return her/his order",
+              "fullTitle": "Customer order return process https://www.preprod.laboutiqueofficielle.com Customer return her/his order",
+              "timedOut": null,
+              "duration": 34237,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "// Access the order details to process the return\ncy.visit(url + '/account', {\n  failOnStatusCode: false\n}, {\n  responseTimeout: 10000\n}, {\n  followRedirect: true\n});\ncy.validateElement('a[href=\"/account/history\"]');\ncy.get('a[href=\"/account/history\"]').eq(0).click({\n  force: true\n});\ncy.url().should('contain', '/account/history');\n// Retrieve the client's orderId from DBMS\nconst getClientOrderId = cy.task(\"queryDb\", `select c2.commande_id from lbov4.commande c2 where c2.client_email = '${this.data.custom_email}' order by c2.commande_date_ajout`).then(Indexcount => {\n  // Extract all linked orderIDs to this user\n  const orderIds = Indexcount.map(record => record['commande_id']);\n  // Optimize order DOM element retrieval for faster processing\n  const orderItemActionClass = '.c-order-item__action';\n  const orderItemShowClass = '.c-order-item__show';\n  const orderDetailLinkClass = '.c-order-detail__link';\n  // Use Cypress native visibility && click function\n  const clickOnOrderElement = element => {\n    cy.get(element).should('be.visible').click({\n      force: true\n    });\n  };\n  cy.get(orderItemActionClass).then(orderReturnActions => {\n    clickOnOrderElement(orderItemShowClass);\n    clickOnOrderElement(orderDetailLinkClass);\n  });\n  // Perform URL assertion testing to ensure inclusion of at least one orderId  \n  cy.url().as('url');\n  cy.get('@url').should(url => {\n    const isOneOfOrderIdsPresent = orderIds.some(id => url.includes(`/account/history/${id}/product-return-detail`));\n    expect(isOneOfOrderIdsPresent).to.be.true;\n  });\n  // Proceed to order return workflow\n  cy.customerOrderReturn.acceptReturnConditions();\n  cy.validateElement('.c-order-return__product > .c-checkbox > label');\n  cy.get('.c-order-return__product > .c-checkbox > label').eq(0).then(ProductToReturn => {\n    if (ProductToReturn.length > 0) {\n      cy.get('.c-order-return__product > .c-checkbox > label').eq(0).click({\n        force: true\n      });\n    } else {\n      throw new Error(\"No checkboxes found, something went wrong with this refund request, check your logs.\");\n    }\n  });\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    cy.get('select[data-v-0326f989]').then($els => {\n      expect($els).to.have.length.of.at.least(1);\n      if ($els.eq(1).length) {\n        cy.wrap($els.eq(1)).select('2').should('have.value', '2');\n      } else if ($els.eq(0).length) {\n        cy.wrap($els.eq(0)).select('2').should('have.value', '2');\n      }\n    });\n  });\n  cy.validateElement('[id^=\"message-\"]');\n  cy.get('[id^=\"message-\"]').clear().type('This test is automated');\n  cy.validateElement('.c-order-return__notice');\n  // Submit the request\n  cy.wait(4000); /* TO KEEP FOR CI TESTS */\n  cy.validateElement('form > .c-btn');\n  cy.get('form > .c-btn').click({\n    force: true\n  });\n  cy.validateElement('.c-order-return__modal');\n  cy.validateElement('.c-btn--link');\n  cy.get('.c-btn--link').click({\n    force: true\n  });\n  // Make sure the right URL's end-point has been called\n  cy.url().as('url');\n  cy.get('@url').should(url => {\n    const isOneOfOrderIdsPresent = orderIds.some(id => url.includes(`/account/history/${id}/product-return-detail`));\n    expect(isOneOfOrderIdsPresent).to.be.true;\n  });\n  // Returned body health check\n  cy.validateElement('.c-return-validate');\n  cy.validateElement('.c-return-validate__summary-title');\n  cy.validateElement('.c-return-validate__total');\n  cy.validateElement('.c-shipping-product');\n});",
+              "err": {},
+              "uuid": "94bfa509-b2bc-4402-a65a-ae4aa225c906",
+              "parentUUID": "eeb70f40-baa8-4fd6-ac3a-8ddecffc77d2",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "94bfa509-b2bc-4402-a65a-ae4aa225c906"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 34237,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "a6761ba0-9c7d-4bbb-ba03-e8e6209180f5",
+          "title": "Customer order return process https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Customer return her/his order",
+              "fullTitle": "Customer order return process https://www.preprod.ryses.es Customer return her/his order",
+              "timedOut": null,
+              "duration": 33150,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "// Access the order details to process the return\ncy.visit(url + '/account', {\n  failOnStatusCode: false\n}, {\n  responseTimeout: 10000\n}, {\n  followRedirect: true\n});\ncy.validateElement('a[href=\"/account/history\"]');\ncy.get('a[href=\"/account/history\"]').eq(0).click({\n  force: true\n});\ncy.url().should('contain', '/account/history');\n// Retrieve the client's orderId from DBMS\nconst getClientOrderId = cy.task(\"queryDb\", `select c2.commande_id from lbov4.commande c2 where c2.client_email = '${this.data.custom_email}' order by c2.commande_date_ajout`).then(Indexcount => {\n  // Extract all linked orderIDs to this user\n  const orderIds = Indexcount.map(record => record['commande_id']);\n  // Optimize order DOM element retrieval for faster processing\n  const orderItemActionClass = '.c-order-item__action';\n  const orderItemShowClass = '.c-order-item__show';\n  const orderDetailLinkClass = '.c-order-detail__link';\n  // Use Cypress native visibility && click function\n  const clickOnOrderElement = element => {\n    cy.get(element).should('be.visible').click({\n      force: true\n    });\n  };\n  cy.get(orderItemActionClass).then(orderReturnActions => {\n    clickOnOrderElement(orderItemShowClass);\n    clickOnOrderElement(orderDetailLinkClass);\n  });\n  // Perform URL assertion testing to ensure inclusion of at least one orderId  \n  cy.url().as('url');\n  cy.get('@url').should(url => {\n    const isOneOfOrderIdsPresent = orderIds.some(id => url.includes(`/account/history/${id}/product-return-detail`));\n    expect(isOneOfOrderIdsPresent).to.be.true;\n  });\n  // Proceed to order return workflow\n  cy.customerOrderReturn.acceptReturnConditions();\n  cy.validateElement('.c-order-return__product > .c-checkbox > label');\n  cy.get('.c-order-return__product > .c-checkbox > label').eq(0).then(ProductToReturn => {\n    if (ProductToReturn.length > 0) {\n      cy.get('.c-order-return__product > .c-checkbox > label').eq(0).click({\n        force: true\n      });\n    } else {\n      throw new Error(\"No checkboxes found, something went wrong with this refund request, check your logs.\");\n    }\n  });\n  cy.fixture('shippingInfo.json').then(shippingInfo => {\n    cy.get('select[data-v-0326f989]').then($els => {\n      expect($els).to.have.length.of.at.least(1);\n      if ($els.eq(1).length) {\n        cy.wrap($els.eq(1)).select('2').should('have.value', '2');\n      } else if ($els.eq(0).length) {\n        cy.wrap($els.eq(0)).select('2').should('have.value', '2');\n      }\n    });\n  });\n  cy.validateElement('[id^=\"message-\"]');\n  cy.get('[id^=\"message-\"]').clear().type('This test is automated');\n  cy.validateElement('.c-order-return__notice');\n  // Submit the request\n  cy.wait(4000); /* TO KEEP FOR CI TESTS */\n  cy.validateElement('form > .c-btn');\n  cy.get('form > .c-btn').click({\n    force: true\n  });\n  cy.validateElement('.c-order-return__modal');\n  cy.validateElement('.c-btn--link');\n  cy.get('.c-btn--link').click({\n    force: true\n  });\n  // Make sure the right URL's end-point has been called\n  cy.url().as('url');\n  cy.get('@url').should(url => {\n    const isOneOfOrderIdsPresent = orderIds.some(id => url.includes(`/account/history/${id}/product-return-detail`));\n    expect(isOneOfOrderIdsPresent).to.be.true;\n  });\n  // Returned body health check\n  cy.validateElement('.c-return-validate');\n  cy.validateElement('.c-return-validate__summary-title');\n  cy.validateElement('.c-return-validate__total');\n  cy.validateElement('.c-shipping-product');\n});",
+              "err": {},
+              "uuid": "cdbc29cc-cd79-4495-b1d6-d920fc128cfa",
+              "parentUUID": "a6761ba0-9c7d-4bbb-ba03-e8e6209180f5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "cdbc29cc-cd79-4495-b1d6-d920fc128cfa"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 33150,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "a1b31047-f21d-4f98-983d-a12d904f73fa",
+          "title": "Customer returned the order for process validation via BOB",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Validate order return request",
+              "fullTitle": "Customer returned the order for process validation via BOB Validate order return request",
+              "timedOut": null,
+              "duration": 39832,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/runCustomerReturnOrderPartiallyWithFullRefund.js.mp4\"",
+              "code": "// Go to the returns management panel\ncy.loginBOB();\ncy.validateElement('.sidenav-toplevel > :nth-child(2) > :nth-child(1) > .mat-list-item-content');\ncy.get('.sidenav-toplevel > :nth-child(2) > :nth-child(1) > .mat-list-item-content').click({\n  force: true\n});\n// Re-confirm the return request\ncy.validateElement('[class^=sidenav-item-name');\ncy.get('[class^=sidenav-item-name').eq(2).click({\n  force: true\n});\ncy.url().should('contain', '/return-order');\n// Listing health check\ncy.validateElement('lbo-return-order-list > :nth-child(4)');\ncy.validateElement('lbo-return-order-list > :nth-child(6)');\n// Enter the retrived OrderID and search it\ncy.validateElement('#mat-input-3');\nconst getClientOrderId = cy.task(\"queryDb\", `select c2.commande_id from lbov4.commande c2 where c2.client_email = '${this.data.custom_email}' order by c2.commande_date_ajout`).then(Indexcount => {\n  // Extract all linked orderIDs this user\n  const orderIds = Indexcount.map(record => record['commande_id']);\n  // Log the resulting array for further debugging aspects\n  cy.log(`Retrieved order IDs: ${orderIds.join(\", \")}`);\n  // Store unique order IDs in a set\n  const uniqueOrderIds = new Set(orderIds);\n  // Loop through each unique order ID\n  cy.wrap([...uniqueOrderIds]).each(orderId => {\n    // Clear and enter the order ID in the input field\n    cy.get('[id^=\"mat-input\"]').eq(1).clear().type(orderId);\n    // Click the search button\n    cy.get(':nth-child(5) > .mat-raised-button > .mat-button-wrapper').click({\n      force: true\n    });\n    // Make sure the selected order is the one we're looking for\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.mat-row > .cdk-column-order');\n    cy.get('.mat-row > .cdk-column-order', {\n      timeout: 0\n    }).invoke('text').then(text => {\n      const orderIdsArray = text.split(',').map(Number).filter(Number.isInteger);\n      const containsOrderId = orderIdsArray.includes(orderId);\n      expect(containsOrderId).to.be.true;\n      // Make sure the order ID is not used again in the loop\n      const orderIdCount = orderIdsArray.filter(id => id === orderId).length;\n      expect(orderIdCount).to.equal(1);\n    });\n    // Click the row to open the order details\n    cy.validateElement('.mat-row');\n    cy.get('.mat-row').click({\n      force: true\n    });\n    // Wait for the order details to load\n    cy.validateElement('.mat-headline').wait(5000); /* TO KEEP FOR CI TESTS */\n    // Check if the size block exists\n    cy.get('body').then($ele => {\n      if ($ele.find(':nth-child(2) > .mat-raised-button > .mat-button-wrapper').length > 0) {\n        // If the size block exists, validate the elements on the page\n        cy.validateElement('[class^=\"title\"]');\n        cy.validateElement('[class^=\"content-container\"]');\n        cy.validateElement('.sidenav-scrollbar-container');\n        cy.validateElement('.content-container > :nth-child(5) > :nth-child(1)');\n        cy.validateElement('.content-container > :nth-child(5) > :nth-child(2)');\n        cy.validateElement('[class^=\"mat-checkbox-inner-container\"]');\n        cy.validateElement(':nth-child(1) > .mat-raised-button > .mat-button-wrapper');\n        cy.validateElement(':nth-child(2) > .mat-raised-button > .mat-button-wrapper');\n        // Retrieve the orderReturnId from the DBMS\n        const getOrderReturnId = cy.task(\"queryDb\", `select ro.id from lbov4.return_order ro where ro.commande_id = '${orderId}' order by ro.created DESC limit 1`).then(Indexcount => {\n          // Isolate the OrderID (index based)\n          var OrderReturnId = Indexcount[0]['id'];\n          cy.log(OrderReturnId);\n          // Return credit create PATCH call\n          cy.intercept({\n            method: 'POST',\n            url: '**/return_order/' + OrderReturnId + '/credit/create'\n          }).as('returnOrderCreditCreatePOSTCall');\n          // Return validation PATCH call\n          cy.intercept({\n            method: 'PATCH',\n            url: '**/return_order/' + OrderReturnId + '/patch'\n          }).as('returnOrderPATCHCall');\n          // Return validation POST notify call\n          cy.intercept({\n            method: 'POST',\n            url: '**/return_order/' + OrderReturnId + '/notify/refund'\n          }).as('returnOrderNotifyPOSTCall');\n          // Return order payment validation POST call\n          cy.intercept({\n            method: 'POST',\n            url: '**/return_order_payment/create'\n          }).as('returnOrderPOSTCall');\n          // Return order status GET call\n          cy.intercept({\n            method: 'GET',\n            url: '**/return_order/status'\n          }).as('returnOrderStatusGETCall');\n        });\n        // Submit the request\n        cy.get('[class^=mat-checkbox-inner-container');\n        cy.get('[type=\"checkbox\"]').eq(2).check({\n          force: true\n        });\n        cy.get(':nth-child(2) > .mat-raised-button > .mat-button-wrapper').click({\n          force: true\n        });\n        // Validate API caching et response status code ==> wait for response.status to be either 200, 204 or 201  \n        cy.wait('@returnOrderPATCHCall').its('response.statusCode').should('equal', 204);\n        cy.wait('@returnOrderPOSTCall').its('response.statusCode').should('equal', 201);\n        cy.wait('@returnOrderCreditCreatePOSTCall').its('response.statusCode').should('equal', 201);\n      } else {\n        cy.log('This orderID has already been treated');\n        cy.go('back');\n      }\n    });\n  });\n});",
+              "err": {},
+              "uuid": "fe5efe0f-45a9-42d6-b7a2-0f2795b26998",
+              "parentUUID": "a1b31047-f21d-4f98-983d-a12d904f73fa",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "fe5efe0f-45a9-42d6-b7a2-0f2795b26998"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 39832,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-04-11T11:34:49.863Z",
+    "end": "2025-04-11T11:39:27.454Z",
+    "duration": 277591,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "1c59a036-86f6-4cb8-b0f8-0048d525b36b",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/checkoutWithSavedCreditCard.js",
+      "file": "cypress/e2e/Standalones/FO/checkoutWithSavedCreditCard.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4d5e06a8-5ba8-4f04-91ec-a420427cbc90",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 50976,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutWithSavedCreditCard.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "d8d3194c-36fb-42c8-8355-9a65818c470f",
+              "parentUUID": "4d5e06a8-5ba8-4f04-91ec-a420427cbc90",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d8d3194c-36fb-42c8-8355-9a65818c470f"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 50976,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "c4e0769d-e00f-4f4e-b7d6-290aa42fa25f",
+          "title": "Validating classic & stored CREDIT CARD checkout for:/",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Go to products listing with a price higher than 100 euros on macbook-15",
+              "fullTitle": "Validating classic & stored CREDIT CARD checkout for:/ Go to products listing with a price higher than 100 euros on macbook-15",
+              "timedOut": null,
+              "duration": 226047,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutWithSavedCreditCard.js.mp4\"",
+              "code": "// Function to process payment with a saved credit card\nfunction savedCreditCardPaymentProcess() {\n  cy.validateElement('[id^=\"crypto-\"]');\n  typeAndClickUntilNotPresent();\n  cy.validateElement('.c-confirm__header').validateElement('.c-confirm__title').validateElement('.c-confirm__subtitle');\n  cy.visit('/account/history', {\n    failOnStatusCode: false,\n    followRedirect: true,\n    responseTimeout: 10000\n  });\n  cy.get(':nth-child(1) > .c-order-item').should('have.length.gt', 0);\n}\n// Recursive function to handle dynamic input field\nfunction typeAndClickUntilNotPresent() {\n  cy.get('body').then($body => {\n    cy.wait(5000); /* To keep for CI tests */\n    if ($body.find('[id^=\"crypto-\"]').length > 0) {\n      cy.get('[id^=\"crypto-\"]').first().should('be.visible').clear({\n        force: true\n      }).type('123');\n      cy.get('[data-cy=\"submit-basket\"]').should('be.enabled').click({\n        force: true\n      });\n      cy.get('[id^=\"crypto-\"]', {\n        timeout: 30000\n      }).should('not.exist');\n      // Recursively call the function if elements are still present\n      typeAndClickUntilNotPresent();\n    } else {\n      cy.log('Success: No more elements with IDs starting with \"crypto-\"');\n    }\n  });\n}\ntypeAndClickUntilNotPresent();\n// Proceed with checkout process\ncy.addShippingAddress();\ncy.addProductToBasket();\ncy.productSizer();\ncy.basketValidation();\ncy.selectShippingMethod();\n// API call interception\ncy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\ncy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n// Wait for API response\ncy.waitForApiResponse('@hipayDataValidation', 202);\n// Utility function to handle iframe interaction\nconst getIframeBody = selector => {\n  return cy.get(selector, {\n    timeout: 30000\n  }).its('0.contentDocument.body').should('not.be.undefined').then(cy.wrap);\n};\n// Start payment process\ncy.wait(3000); /* To keep for CI tests */\ncy.get('body').then($body => {\n  if ($body.find('.c-payment-method-old-card').length > 0) {\n    savedCreditCardPaymentProcess();\n  } else {\n    // Insert card details\n    getIframeBody('#payment-card-custom-number iframe').find('[name=cardnumber]').should('be.visible').type(Cypress.env('customer_cc_number'));\n    getIframeBody('#payment-card-custom-date iframe').find('[name=cc-exp]').should('be.visible').type(Cypress.env('customer_cc_expdate'));\n    getIframeBody('#payment-card-custom-cvc iframe').find('[name=cvc]').should('be.visible').type(Cypress.env('customer_cc_cvc'));\n    // Save card and submit\n    cy.validateElement('[id=\"save-card\"]').get('[id^=\"save-card\"]').check({\n      force: true\n    }).should('be.checked');\n    cy.validateElement('[data-cy=\"submit-basket\"]').get('[data-cy=\"submit-basket\"]').click({\n      force: true\n    });\n    // Ensure redirect completes\n    cy.url().should('not.include', 'redirect');\n    cy.wait(3000); /* To keep for CI tests */\n    cy.get('#continue-transaction', {\n      timeout: 30000\n    }).should('be.visible');\n    cy.url().should('match', /https:\\/\\/v2-sim\\.preprod\\.psp-solutions\\.com\\/acs-simulation\\/challenge\\?/);\n  }\n});\n// Final transaction confirmation - Navigate and complete the checkout flow again\ncy.get('#continue-transaction', {\n  timeout: 30000\n}).should('be.visible').and('not.be.disabled').click({\n  force: true\n});\ncy.visit('/checkout/basket', {\n  failOnStatusCode: false,\n  followRedirect: true,\n  responseTimeout: 10000\n});\ncy.visit('/', {\n  failOnStatusCode: false,\n  followRedirect: true,\n  responseTimeout: 10000\n});\ncy.addProductToBasket();\ncy.productSizer();\ncy.basketValidation();\ncy.selectShippingMethod();\nsavedCreditCardPaymentProcess();",
+              "err": {},
+              "uuid": "6cdab284-6821-40b6-973b-c3216313252c",
+              "parentUUID": "c4e0769d-e00f-4f4e-b7d6-290aa42fa25f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6cdab284-6821-40b6-973b-c3216313252c"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 226047,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

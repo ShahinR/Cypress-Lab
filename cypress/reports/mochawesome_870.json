@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-05-19T11:18:48.245Z",
+    "end": "2025-05-19T11:20:54.394Z",
+    "duration": 126149,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "336ed743-7c5e-4aac-8397-264bfb36733f",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/homePageMainMenuListing.js",
+      "file": "cypress/e2e/Standalones/FO/homePageMainMenuListing.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "db8d9c1c-61e3-440d-ad1e-9d680510eb09",
+          "title": "Testing home page main menu product listing queries on https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Validates HTTP responses for links on https://www.preprod.laboutiqueofficielle.com",
+              "fullTitle": "Testing home page main menu product listing queries on https://www.preprod.laboutiqueofficielle.com Validates HTTP responses for links on https://www.preprod.laboutiqueofficielle.com",
+              "timedOut": null,
+              "duration": 70050,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/homePageMainMenuListing.js.mp4\"",
+              "code": "cy.wrap(hrefLinks).then(links => {\n  const batchSize = 250;\n  // Process links in batches (handling async requests in node context)\n  Cypress._.chunk(links, batchSize).forEach((batchLinks, batchIndex) => {\n    cy.task('batchRequest', {\n      baseUrl: url,\n      paths: batchLinks\n    }, {\n      timeout: 120000\n    }).then(responses => {\n      responses.forEach(({\n        href,\n        status\n      }, index) => {\n        const linkIndex = batchIndex * batchSize + index + 1;\n        cy.log(`Visited href ${linkIndex}: ${href}`);\n        // Validate HTTP status\n        if (status) {\n          expect(status).to.not.be.oneOf([400, 401, 403, 404, 500, 502, 503]);\n          expect(status).to.be.oneOf([200, 301, 302]);\n        } else {\n          cy.log(`Empty HTTP response for ${href}, skipping...`);\n        }\n        cy.validateElement('[data-cy=\"home-page-main-menu\"]');\n      });\n    });\n  });\n});",
+              "err": {},
+              "uuid": "2096bb7d-8fbb-459a-8c32-cde4f70d142c",
+              "parentUUID": "db8d9c1c-61e3-440d-ad1e-9d680510eb09",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "2096bb7d-8fbb-459a-8c32-cde4f70d142c"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 70050,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "f5e6ac34-43e5-4b6d-9012-a58ea1cdd56c",
+          "title": "Testing home page main menu product listing queries on https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Validates HTTP responses for links on https://www.preprod.ryses.es",
+              "fullTitle": "Testing home page main menu product listing queries on https://www.preprod.ryses.es Validates HTTP responses for links on https://www.preprod.ryses.es",
+              "timedOut": null,
+              "duration": 53523,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/homePageMainMenuListing.js.mp4\"",
+              "code": "cy.wrap(hrefLinks).then(links => {\n  const batchSize = 250;\n  // Process links in batches (handling async requests in node context)\n  Cypress._.chunk(links, batchSize).forEach((batchLinks, batchIndex) => {\n    cy.task('batchRequest', {\n      baseUrl: url,\n      paths: batchLinks\n    }, {\n      timeout: 120000\n    }).then(responses => {\n      responses.forEach(({\n        href,\n        status\n      }, index) => {\n        const linkIndex = batchIndex * batchSize + index + 1;\n        cy.log(`Visited href ${linkIndex}: ${href}`);\n        // Validate HTTP status\n        if (status) {\n          expect(status).to.not.be.oneOf([400, 401, 403, 404, 500, 502, 503]);\n          expect(status).to.be.oneOf([200, 301, 302]);\n        } else {\n          cy.log(`Empty HTTP response for ${href}, skipping...`);\n        }\n        cy.validateElement('[data-cy=\"home-page-main-menu\"]');\n      });\n    });\n  });\n});",
+              "err": {},
+              "uuid": "f6f59d0a-78f6-4b18-acf4-ec39d8753c14",
+              "parentUUID": "f5e6ac34-43e5-4b6d-9012-a58ea1cdd56c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f6f59d0a-78f6-4b18-acf4-ec39d8753c14"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 53523,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

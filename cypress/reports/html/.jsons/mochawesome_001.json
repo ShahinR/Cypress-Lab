@@ -1,0 +1,92 @@
+{
+  "stats": {
+    "suites": 0,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-03-11T14:44:15.188Z",
+    "end": "2025-03-11T14:44:15.408Z",
+    "duration": 220,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "bd401163-e573-4c62-abf3-46efd3cf005c",
+      "title": "",
+      "fullFile": "cypress/e2e/addNewAccount.js",
+      "file": "cypress/e2e/addNewAccount.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [
+        {
+          "title": "An uncaught error was detected outside of a test",
+          "fullTitle": "An uncaught error was detected outside of a test",
+          "timedOut": null,
+          "duration": 195,
+          "state": "failed",
+          "speed": null,
+          "pass": false,
+          "fail": true,
+          "pending": false,
+          "context": "[\n  \"../screenshots/addNewAccount.js/An uncaught error was detected outside of a test (failed).png\",\n  \"../videos/addNewAccount.js.mp4\"\n]",
+          "code": "throw err;",
+          "err": {
+            "message": "TypeError: The following error originated from your test code, not from Cypress.\n\n  > (0 , _mocha.default) is not a function\n\nWhen Cypress detects uncaught errors originating from your test code it will automatically fail the current test.\n\nCypress could not associate this error to any specific test.\n\nWe dynamically generated a new test to display this failure.",
+            "estack": "TypeError: The following error originated from your test code, not from Cypress.\n\n  > (0 , _mocha.default) is not a function\n\nWhen Cypress detects uncaught errors originating from your test code it will automatically fail the current test.\n\nCypress could not associate this error to any specific test.\n\nWe dynamically generated a new test to display this failure.\n    at Suite.eval (webpack://cypress-automation/./cypress/e2e/addNewAccount.js:18:9)\n    at Object.create (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:161617:19)\n    at context.describe.context.context (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:161336:27)\n    at createRunnable (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:145949:31)\n    at <unknown> (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:146010:14)\n    at eval (webpack://cypress-automation/./cypress/e2e/addNewAccount.js:11:2)\n    at arrayEach (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:18508:11)\n    at Function.forEach (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:27388:14)\n    at eval (webpack://cypress-automation/./cypress/e2e/addNewAccount.js:10:10)\n    at eval (https://www.preprod.laboutiqueofficielle.com/__cypress/tests?p=cypress/e2e/addNewAccount.js:262:3)",
+            "diff": null
+          },
+          "uuid": "feaf8456-7f6f-48a8-99f4-ef269d57f8e6",
+          "parentUUID": "bd401163-e573-4c62-abf3-46efd3cf005c",
+          "isHook": false,
+          "skipped": false
+        }
+      ],
+      "suites": [],
+      "passes": [],
+      "failures": [
+        "feaf8456-7f6f-48a8-99f4-ef269d57f8e6"
+      ],
+      "pending": [],
+      "skipped": [],
+      "duration": 195,
+      "root": true,
+      "rootEmpty": false,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "charts": true,
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress/reports/html/.jsons"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

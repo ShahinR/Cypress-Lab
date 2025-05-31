@@ -1,0 +1,186 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-04-14T10:16:16.912Z",
+    "end": "2025-04-14T10:20:47.867Z",
+    "duration": 270955,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "58df640c-67d2-44ff-ab16-965ac6c17077",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/frictionlessHipayCheckoutWithPromoCode.js",
+      "file": "cypress/e2e/Standalones/FO/frictionlessHipayCheckoutWithPromoCode.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "d6bf70fa-a192-4166-b022-802d7d946afd",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 50984,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/frictionlessHipayCheckoutWithPromoCode.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "50781657-4481-4cf2-acd8-2aed02370845",
+              "parentUUID": "d6bf70fa-a192-4166-b022-802d7d946afd",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "50781657-4481-4cf2-acd8-2aed02370845"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 50984,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "a4edd985-978b-454f-a994-4de4c2d143ff",
+          "title": "This test will validate hipay frictionless checkout process for https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Go to products listing with a price higher than 100 euros on macbook-15",
+              "fullTitle": "This test will validate hipay frictionless checkout process for https://www.preprod.laboutiqueofficielle.com Go to products listing with a price higher than 100 euros on macbook-15",
+              "timedOut": null,
+              "duration": 104811,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/frictionlessHipayCheckoutWithPromoCode.js.mp4\"",
+              "code": "// Checkout process\ncy.addShippingAddress();\ncy.acceptCookies();\nfor (let i = 0; i < 2; i++) {\n  cy.addProductToBasket();\n  cy.productSizer();\n}\n// Promotion code block\ncy.get('body').scrollIntoView({\n  offset: {\n    top: 0,\n    left: 0\n  }\n});\ncy.get('[data-cy=basket-link]').scrollIntoView().click({\n  force: true\n});\ncy.url().should('include', '/checkout/basket');\ncy.validateElement('.c-shopping-cart-promo-code__toggle > button');\ncy.get('.c-shopping-cart-promo-code__toggle > button').click({\n  force: true\n});\ncy.validateElement('#default');\ncy.get('#default').click({\n  force: true\n}).clear();\ncy.get('#default').click({\n  force: true\n}).type(Cypress.env('defaultPromoCode'));\ncy.validateElement('.c-btn.c-btn--accent.c-btn--small');\ncy.get('.c-btn.c-btn--accent.c-btn--small').click({\n  force: true\n});\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\n// Make sure the promotion code is applied successfully\ncy.get('body').then(shipping => {\n  const promoCodeAppliedSuccessfully = shipping.find('.c-shopping-cart-promo').length > 0;\n  switch (true) {\n    case promoCodeAppliedSuccessfully:\n      cy.validateElement('.c-shopping-cart-promo');\n      console.log('Promotion code is applied successfully');\n      break;\n    default:\n      throw new Error('Promotion code is not applied successfully, please check your logs...');\n  }\n});\n// API calls capture\ncy.intercept({\n  method: 'GET',\n  url: '**/v4/secure/checkout/payments/available/**'\n}).as('basketDataValidation');\ncy.intercept({\n  method: 'POST',\n  url: 'https://stage-data.hipay.com/checkout-data'\n}).as('hipayDataValidation');\n// Continue with the checkout process\ncy.validateElement('[data-cy=validate-basket]').get('[data-cy=\"validate-basket\"]').first().click({\n  force: true\n});\ncy.selectShippingMethod();\n// Credit card payment and purchase validation\ncy.frictionlessCreditCardPayment();\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\ncy.validateElement('.c-confirm__header', {\n  timeout: 20000\n}).validateElement('.c-confirm__title').validateElement('.c-confirm__subtitle').validateElement('.c-confirm-shipping');\ncy.visit(url + '/account/history');\ncy.get(':nth-child(1) > .c-order-item', {\n  timeout: 20000\n}).should('have.length.gt', 0);",
+              "err": {},
+              "uuid": "c83361b9-48af-4370-968e-12207d774433",
+              "parentUUID": "a4edd985-978b-454f-a994-4de4c2d143ff",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "c83361b9-48af-4370-968e-12207d774433"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 104811,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "0ff128e2-4ed4-4873-b7ca-a98aa7757f98",
+          "title": "This test will validate hipay frictionless checkout process for https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Go to products listing with a price higher than 100 euros on macbook-15",
+              "fullTitle": "This test will validate hipay frictionless checkout process for https://www.preprod.ryses.es Go to products listing with a price higher than 100 euros on macbook-15",
+              "timedOut": null,
+              "duration": 112408,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/frictionlessHipayCheckoutWithPromoCode.js.mp4\"",
+              "code": "// Checkout process\ncy.addShippingAddress();\ncy.acceptCookies();\nfor (let i = 0; i < 2; i++) {\n  cy.addProductToBasket();\n  cy.productSizer();\n}\n// Promotion code block\ncy.get('body').scrollIntoView({\n  offset: {\n    top: 0,\n    left: 0\n  }\n});\ncy.get('[data-cy=basket-link]').scrollIntoView().click({\n  force: true\n});\ncy.url().should('include', '/checkout/basket');\ncy.validateElement('.c-shopping-cart-promo-code__toggle > button');\ncy.get('.c-shopping-cart-promo-code__toggle > button').click({\n  force: true\n});\ncy.validateElement('#default');\ncy.get('#default').click({\n  force: true\n}).clear();\ncy.get('#default').click({\n  force: true\n}).type(Cypress.env('defaultPromoCode'));\ncy.validateElement('.c-btn.c-btn--accent.c-btn--small');\ncy.get('.c-btn.c-btn--accent.c-btn--small').click({\n  force: true\n});\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\n// Make sure the promotion code is applied successfully\ncy.get('body').then(shipping => {\n  const promoCodeAppliedSuccessfully = shipping.find('.c-shopping-cart-promo').length > 0;\n  switch (true) {\n    case promoCodeAppliedSuccessfully:\n      cy.validateElement('.c-shopping-cart-promo');\n      console.log('Promotion code is applied successfully');\n      break;\n    default:\n      throw new Error('Promotion code is not applied successfully, please check your logs...');\n  }\n});\n// API calls capture\ncy.intercept({\n  method: 'GET',\n  url: '**/v4/secure/checkout/payments/available/**'\n}).as('basketDataValidation');\ncy.intercept({\n  method: 'POST',\n  url: 'https://stage-data.hipay.com/checkout-data'\n}).as('hipayDataValidation');\n// Continue with the checkout process\ncy.validateElement('[data-cy=validate-basket]').get('[data-cy=\"validate-basket\"]').first().click({\n  force: true\n});\ncy.selectShippingMethod();\n// Credit card payment and purchase validation\ncy.frictionlessCreditCardPayment();\ncy.wait(4000); /* TO KEEP FOR CI TESTS */\ncy.validateElement('.c-confirm__header', {\n  timeout: 20000\n}).validateElement('.c-confirm__title').validateElement('.c-confirm__subtitle').validateElement('.c-confirm-shipping');\ncy.visit(url + '/account/history');\ncy.get(':nth-child(1) > .c-order-item', {\n  timeout: 20000\n}).should('have.length.gt', 0);",
+              "err": {},
+              "uuid": "83226196-77f5-46ba-ad0e-5a5c672ed73d",
+              "parentUUID": "0ff128e2-4ed4-4873-b7ca-a98aa7757f98",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "83226196-77f5-46ba-ad0e-5a5c672ed73d"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 112408,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

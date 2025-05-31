@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-05-05T14:57:12.483Z",
+    "end": "2025-05-05T14:59:52.182Z",
+    "duration": 159699,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "d2c8f898-42b6-4421-bc46-27f587cf6dca",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/hybridcheckoutGiftCardAndFCC.js",
+      "file": "cypress/e2e/Standalones/FO/hybridcheckoutGiftCardAndFCC.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "53bcaf30-0658-4afe-a731-15f7aadfee82",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 50159,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/hybridcheckoutGiftCardAndFCC.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "1b645476-2f2f-492e-b301-0824572603b4",
+              "parentUUID": "53bcaf30-0658-4afe-a731-15f7aadfee82",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "1b645476-2f2f-492e-b301-0824572603b4"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 50159,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "5a91d710-e6bd-4226-bd37-6ab57bb15afb",
+          "title": "Validate hybrid gift card checkout process and GC + frictionless payment",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Navigate and test checkout process on viewport: macbook-15",
+              "fullTitle": "Validate hybrid gift card checkout process and GC + frictionless payment Navigate and test checkout process on viewport: macbook-15",
+              "timedOut": null,
+              "duration": 108921,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/hybridcheckoutGiftCardAndFCC.js.mp4\"",
+              "code": "cy.fixture('shippingInfo.json').then(({\n  FRANCE\n}) => {\n  cy.fixture('stores').then(stores => {\n    // Only select stores that match the FRANCE store URL\n    const franceStores = stores.filter(store => store.includes(FRANCE.storeUrl));\n    franceStores.forEach(store => {\n      cy.visit(store, {\n        failOnStatusCode: false,\n        responseTimeout: 10000,\n        followRedirect: true\n      });\n      cy.acceptCookies();\n      cy.customLogin();\n      cy.addShippingAddress();\n      cy.listingApiCalls();\n      cy.commonApiInterception();\n      cy.addProductToBasket();\n      cy.productSizer();\n      cy.visit(store + '/account', {\n        failOnStatusCode: false,\n        responseTimeout: 10000,\n        followRedirect: true\n      });\n      // Activate gift card (only once here)\n      for (let i = 0; i < 2; i++) {\n        activateGiftCardPinCode();\n      }\n      // Proceed with checkout after gift card is applied\n      cy.basketValidation();\n      cy.selectShippingMethod();\n      cy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\n      cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n      cy.validateVoucherSelection();\n      cy.creditVoucherPayment();\n      cy.validateVoucherPaymentConfirmation();\n    });\n  });\n});",
+              "err": {},
+              "uuid": "1b91d248-e0c1-45c7-96df-3f76df98c846",
+              "parentUUID": "5a91d710-e6bd-4226-bd37-6ab57bb15afb",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "1b91d248-e0c1-45c7-96df-3f76df98c846"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 108921,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

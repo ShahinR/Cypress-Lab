@@ -1,0 +1,108 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-05-28T08:28:53.188Z",
+    "end": "2025-05-28T08:28:58.441Z",
+    "duration": 5253,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "e645d99e-f638-48a2-9c8d-77597d0894e2",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/homePageCookiesManagement.js",
+      "file": "cypress/e2e/Standalones/FO/homePageCookiesManagement.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "b23754f3-3b7b-450c-8b67-feedcd3a9c87",
+          "title": "This test will validate home page cookies for",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Checks if cookies are managable without any error on macbook-15",
+              "fullTitle": "This test will validate home page cookies for Checks if cookies are managable without any error on macbook-15",
+              "timedOut": null,
+              "duration": 5205,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/homePageCookiesManagement.js.mp4\"",
+              "code": "// Make sure cookies banner exists in home page and works\ncy.validateElement('#cookiebanner').validateElement('.c-button--personalize').validateElement('#popupFullConsent');\n// Accept all cookies (first banner)\ncy.get('#popupFullConsent').click().get('#popupFullConsent').should('not.be.visible');\n// Cookies personalisation assertion testing\ncy.get('.c-button--personalize').click({\n  force: true\n}).validateElement('body').validateElement(':nth-child(3) > :nth-child(1) > :nth-child(3) > .detail-btn').validateElement('.cookiebanner-personalize__accept-all').validateElement('.cookiebanner-personalize__close').get('#popupFullConsent').click({\n  force: true\n});\n// Cookies banners should not be visible anymore ==> user accepted all cookies\ncy.get('.cookiebanner-personalize__accept-all').get('[id^=bannerFullConsent]').should('not.be.visible');\n// Cookies presonalization assertion testing (user action)\ncy.get('.c-button--personalize').click({\n  force: true\n}).validateElement('.content > :nth-child(2)').validateElement(':nth-child(2) > :nth-child(2) > .c-checkbox > label');\n// User personalize cookies\ncy.validateElement('[id^=CybotCookiebotDialogBodyLevelButton]').get('[type=\"checkbox\"]').first().uncheck({\n  force: true\n}).get('[type=\"checkbox\"]').last().uncheck({\n  force: true\n}).get('[type=\"checkbox\"]').first().check({\n  force: true\n}).get('[type=\"checkbox\"]').last().check({\n  force: true\n});\n// Submit the modifications (cookies banners should not be visible anymore ==> user accepted all cookies)\ncy.get('[type=\"checkbox\"]').last().uncheck({\n  force: true\n}).get('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection').click({\n  force: true\n}).get('.cookiebanner-personalize__accept-all').get('[id^=bannerFullConsent]').should('not.be.visible');\n// User deny all cookies && submit the modifications\ncy.get('.c-button--personalize').click({\n  force: true\n}).validateElement('[id^=CybotCookiebotDialogBodyLevelButton]').get('[type=\"checkbox\"]').first().uncheck({\n  force: true\n}).get('[type=\"checkbox\"]').eq(1).uncheck({\n  force: true\n}).get('[type=\"checkbox\"]').last().uncheck({\n  force: true\n}).get('[type=\"checkbox\"]').last().uncheck({\n  force: true\n}).get('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection').click({\n  force: true\n});\n// Cookies banners and buttons should not be visible anymore (user refused all cookies)\ncy.get('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection').should('not.be.visible').get('[id^=bannerFullConsent]').should('not.be.visible');",
+              "err": {},
+              "uuid": "04a9ecb4-7f2a-42a9-9261-73900c490f26",
+              "parentUUID": "b23754f3-3b7b-450c-8b67-feedcd3a9c87",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "04a9ecb4-7f2a-42a9-9261-73900c490f26"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 5205,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

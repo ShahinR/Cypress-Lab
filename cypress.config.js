@@ -1,38 +1,72 @@
-const { defineConfig } = require("cypress");
+/**
+ * @author      LBO DevTeam <s.rastgar@laboutiqueofficielle.com>
+ * @copyright   Copyright (c) Laboutiqueofficielle
+ * @license     Proprietary
+ */
+
+const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
-  projectId: '2pqwf7',
   chromeWebSecurity: false,
+  chromiumWebSecurity: false,
+  retryOnNetworkFailure: true,
+  followRedirect: true,
+  failOnStatusCode: false,
+  chromeWebSecurityDisableHardwareAcceleration: true,
+  defaultCommandTimeout: 30000,
+  responseTimeout: 30000,
+  pageLoadTimeout: 100000, // Ensure pages have enough time to load
+  taskTimeout: 120000,
+  execTimeout: 60000,
+  requestTimeout: 30000,
+  viewportHeight: 1024,
   viewportWidth: 1280,
-  viewportHeight: 720,
-  nodeVersion: "system",
-
-  env: {
-    urlToTest:[
-      'https://www.demoblaze.com'
-    ],
-    custom_firstname: "Bob",
-    custom_lastname: "Dylan",
-    customer_cc_number: "4000000000000002",
-    custom_password: "test@TEST2021",
-    custom_country: "France",
-    custom_city: "Lyon",
-    viewports: ["macbook-15", "iphone-8"],
+  video: true,
+  videoCompression: true,
+  videosFolder: "results/videos",
+  screenshotsFolder: "results/screenshots",
+  reporter: "mochawesome",
+  reporterOptions: {
+    reportDir: "cypress/reports",
+    overwrite: false,
+    html: false,
+    json: true,
+    charts: true,
+    reportPageTitle: "Cypress Nuxt Front : Report",
+    inlineAssets: true,
   },
-
+  env: {
+    fo: 'xxxxxxxxx',
+  },
   e2e: {
     setupNodeEvents(on, config) {
-      return require("./cypress/plugins/index.js")(on, config);
+      process.env.CYPRESS_NO_COMMAND_LOG = 1
+      on("before:browser:launch", (browser = {}, launchOptions) => {
+        if (["chromium", "chrome", "electron"].includes(browser.name)) {
+          if (browser.isHeadless) {
+            launchOptions.args.push("--no-sandbox")
+            launchOptions.args.push("--disable-gpu")
+            launchOptions.args.push("--disable-software-rasterizer")
+            launchOptions.args.push("--disable-dev-shm-usage")
+            launchOptions.args.push("--js-flags=--max-old-space-size=10240")
+            launchOptions.args.push("--enable-precise-memory-info")
+            launchOptions.args.push("--disable-background-timer-throttling")
+            launchOptions.args.push("--disable-renderer-backgrounding")
+            launchOptions.args.push("--disable-backgrounding-occluded-windows")
+            launchOptions.args.push("--renderer-process-limit=1")
+            launchOptions.args.push("--force-fieldtrials=*BackgroundTracing/default/")
+            launchOptions.args.push("--disable-extensions")
+          }
+          return launchOptions
+        }
+      })
+      return require('./cypress/plugins/index.js')(on, config)
     },
-    specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
-    baseUrl: "https://www.demoblaze.com",
+    taskTimeout: 120000,
+    specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
+    baseUrl: 'http://www.demoblaze.com',
     experimentalInteractiveRunEvents: true,
-  },
-
-  component: {
-    devServer: {
-      framework: "vue-cli",
-      bundler: "webpack",
-    },
-  },
-});
+    numTestsKeptInMemory: 0,
+    experimentalMemoryManagement: true,
+  }
+})

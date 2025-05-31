@@ -1,0 +1,149 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 1,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-03-17T12:54:11.982Z",
+    "end": "2025-03-17T12:56:11.989Z",
+    "duration": 120007,
+    "testsRegistered": 2,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "aa53ed88-cfdb-48bb-9343-f67e9fe8066f",
+      "title": "",
+      "fullFile": "cypress/e2e/checkoutBasketMultiProductsFreeSizeAndNormaltUsingDiscountCode.js",
+      "file": "cypress/e2e/checkoutBasketMultiProductsFreeSizeAndNormaltUsingDiscountCode.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "71bdf375-ba37-4ed9-9f37-ff692ee17f55",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15 (Qase ID: 5)",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15 (Qase ID: 5)",
+              "timedOut": null,
+              "duration": 50191,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBasketMultiProductsFreeSizeAndNormaltUsingDiscountCode.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "378e66af-cb36-4b92-be58-1e2d0b339455",
+              "parentUUID": "71bdf375-ba37-4ed9-9f37-ff692ee17f55",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "378e66af-cb36-4b92-be58-1e2d0b339455"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 50191,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "6fe3fccd-3392-47b8-aee1-65af7c2bcf97",
+          "title": "Validate the checkout process for multiple products using a promo code",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Proceed through the checkout process",
+              "fullTitle": "Validate the checkout process for multiple products using a promo code Proceed through the checkout process",
+              "timedOut": null,
+              "duration": 69075,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": "[\n  \"../screenshots/checkoutBasketMultiProductsFreeSizeAndNormaltUsingDiscountCode.js/Validate the checkout process for multiple products using a promo code -- Proceed through the checkout process (failed).png\",\n  \"../videos/checkoutBasketMultiProductsFreeSizeAndNormaltUsingDiscountCode.js.mp4\"\n]",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    // Basket creation process\n    const createBasket = () => {\n      cy.wait(3000); /* Wait for the page to load */\n      cy.addProductToBasket();\n      cy.productSizer();\n    };\n    // Visit the store and login\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: Cypress.env('tailoredResponseTimeout')\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.addShippingAddress();\n    // Repeat basket creation process multiple times\n    Cypress._.times(Cypress.env('numberOfRuns'), () => createBasket());\n    // Add free-size product to basket from a random category\n    const categories = ['/bolsos-c192', '/bonnets-c51', '/bracelets-c52', '/sacs-a-dos-c190'];\n    const randomCategory = categories[Math.floor(Math.random() * categories.length)];\n    // Visit the selected category page\n    cy.visit(store + randomCategory, {\n      failOnStatusCode: false,\n      followRedirect: true\n    }).then(() => {\n      cy.get('.c-product-thumbnail', {\n        timeout: 20000\n      }).should(\"have.length.greaterThan\", 0).then($products => {\n        const validProducts = $products.not('.c-product-list.nosto_element .c-product-thumbnail', {\n          timeout: 20000\n        });\n        if (validProducts.length > 0) {\n          cy.log(`✅ Valid products found in ${randomCategory}, proceeding...`);\n          const randomIndex = Math.floor(Math.random() * Math.min(48, validProducts.length));\n          cy.wrap(validProducts.eq(randomIndex)).find('.c-product-thumbnail__img-wrapper').should(\"be.visible\").click({\n            force: true\n          }).then(() => {\n            cy.get('[data-cy=\"add-to-basket\"]', {\n              timeout: 10000\n            }).should(\"be.visible\").click();\n          });\n        } else {\n          cy.log(`⚠️ No valid products found in ${randomCategory}.`);\n        }\n      });\n    });\n    // Apply promo code and check\n    cy.visit(`${store}/checkout/basket`, {\n      failOnStatusCode: false,\n      followRedirect: true\n    });\n    cy.validateElement('.c-shopping-cart-promo-code__toggle > button');\n    cy.get('.c-shopping-cart-promo-code__toggle > button').click({\n      force: true\n    });\n    cy.get('[id=\"default\"]').clear().type(Cypress.env('defaultPromoCode'));\n    cy.get('.c-btn.c-btn--accent.c-btn--small').click({\n      force: true\n    });\n    cy.get('.c-shopping-cart-promo').invoke('text').then(text => {\n      const normalizedText = text.replace(/\\s+/g, ' ').trim();\n      expect(normalizedText).to.contain(Cypress.env('defaultPromoCode'));\n    });\n    // Complete the checkout process\n    cy.selectShippingMethod(store);\n    // Capture API calls\n    cy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\n    cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n    // Payment and finalization\n    cy.fixture('shippingInfo.json').then(shippingInfo => {\n      const paymentMethod = store.includes(shippingInfo.FRANCE.storeUrl) ? 'Chèque' : store.includes(shippingInfo.SPAIN.storeUrl) || store.includes(shippingInfo.ITALY.storeUrl) ? 'Cheque' : null;\n      if (!paymentMethod) {\n        throw new Error('Invalid country store.');\n      }\n      cy.visit(`${store}/checkout/payment`, {\n        failOnStatusCode: false,\n        followRedirect: true\n      });\n      cy.validateElement('.c-payment-method-item__wrapper > :nth-child(2) > :nth-child(1) > .c-payment-method-item__button');\n      cy.get('.c-payment-method-item__wrapper > :nth-child(2) > :nth-child(1) > .c-payment-method-item__button').click({\n        force: true\n      });\n      cy.get(`[alt=\"${paymentMethod}\"]`).click({\n        force: true\n      });\n      cy.get('[data-cy=\"submit-basket\"]').click({\n        force: true\n      });\n      cy.validateElement('.c-confirm__header', {\n        timeout: 20000\n      });\n      cy.validateElement('.c-confirm__title');\n      cy.validateElement('.c-confirm__subtitle');\n    });\n    // Verify the new order in order history\n    cy.visit(`${store}/account/history`, {\n      failOnStatusCode: false,\n      followRedirect: true\n    });\n    cy.get(':nth-child(1) > .c-order-item', {\n      timeout: 20000\n    }).should('have.length.gt', 0);\n  });\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 20000ms: Expected to find element: `[data-cy=\"add-to-basket\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 20000ms: Expected to find element: `[data-cy=\"add-to-basket\"]`, but never found it.\n    at OrderProductSizerHelper.addToBasket (webpack://cypress-automation/./cypress/support/pageModels.js:244:18)\n    at Context.eval (webpack://cypress-automation/./cypress/support/pageModels.js:216:79)\n    at getRet (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:118322:20)\n    at tryCatcher (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise.attempt.Promise.try (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:4285:29)\n    at Context.thenFn (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:118333:66)\n    at Context.then (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:118584:21)\n    at wrapped (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:138835:19)",
+                "diff": null
+              },
+              "uuid": "5148ecad-b7dc-4759-933f-52bf7df12f82",
+              "parentUUID": "6fe3fccd-3392-47b8-aee1-65af7c2bcf97",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "5148ecad-b7dc-4759-933f-52bf7df12f82"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 69075,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress/reports/html/.jsons"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

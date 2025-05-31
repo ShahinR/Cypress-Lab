@@ -1,0 +1,151 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 1,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-04-11T11:51:32.122Z",
+    "end": "2025-04-11T11:52:52.036Z",
+    "duration": 79914,
+    "testsRegistered": 2,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "0a6742d5-d563-4b19-9ed1-994cfdee9193",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/homePageMainMenuListing.js",
+      "file": "cypress/e2e/Standalones/FO/homePageMainMenuListing.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0fc9890b-00e2-42c8-8a3d-8db8d2735b3c",
+          "title": "Testing home page main menu product listing queries on https://www.preprod.laboutiqueofficielle.com",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Validates HTTP responses for links on https://www.preprod.laboutiqueofficielle.com",
+              "fullTitle": "Testing home page main menu product listing queries on https://www.preprod.laboutiqueofficielle.com Validates HTTP responses for links on https://www.preprod.laboutiqueofficielle.com",
+              "timedOut": null,
+              "duration": 69195,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/homePageMainMenuListing.js.mp4\"",
+              "code": "cy.wrap(hrefLinks).then(links => {\n  const batchSize = 250;\n  // Process links in batches (handling async requests in node context)\n  Cypress._.chunk(links, batchSize).forEach((batchLinks, batchIndex) => {\n    cy.task('batchRequest', {\n      baseUrl: url,\n      paths: batchLinks\n    }, {\n      timeout: 120000\n    }).then(responses => {\n      responses.forEach(({\n        href,\n        status\n      }, index) => {\n        const linkIndex = batchIndex * batchSize + index + 1;\n        cy.log(`Visited href ${linkIndex}: ${href}`);\n        // Validate HTTP status\n        if (status) {\n          expect(status).to.not.be.oneOf([400, 401, 403, 404, 500, 502, 503]);\n          expect(status).to.be.oneOf([200, 301, 302]);\n        } else {\n          cy.log(`Empty HTTP response for ${href}, skipping...`);\n        }\n        cy.validateElement('[data-cy=\"home-page-main-menu\"]');\n      });\n    });\n  });\n});",
+              "err": {},
+              "uuid": "cf11847a-0441-46eb-84c3-6568a1d9eeba",
+              "parentUUID": "0fc9890b-00e2-42c8-8a3d-8db8d2735b3c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "cf11847a-0441-46eb-84c3-6568a1d9eeba"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 69195,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "7fa2a9cc-bf10-4186-bdf1-12c78ecabd31",
+          "title": "Testing home page main menu product listing queries on https://www.preprod.ryses.es",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Validates HTTP responses for links on https://www.preprod.ryses.es",
+              "fullTitle": "Testing home page main menu product listing queries on https://www.preprod.ryses.es Validates HTTP responses for links on https://www.preprod.ryses.es",
+              "timedOut": null,
+              "duration": 10169,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": "[\n  \"../screenshots/homePageMainMenuListing.js/Testing home page main menu product listing queries on httpswww.preprod.ryses.es -- Validates HTTP responses for links on httpswww.preprod.ryses.es (failed).png\",\n  \"../videos/homePageMainMenuListing.js.mp4\"\n]",
+              "code": "cy.wrap(hrefLinks).then(links => {\n  const batchSize = 250;\n  // Process links in batches (handling async requests in node context)\n  Cypress._.chunk(links, batchSize).forEach((batchLinks, batchIndex) => {\n    cy.task('batchRequest', {\n      baseUrl: url,\n      paths: batchLinks\n    }, {\n      timeout: 120000\n    }).then(responses => {\n      responses.forEach(({\n        href,\n        status\n      }, index) => {\n        const linkIndex = batchIndex * batchSize + index + 1;\n        cy.log(`Visited href ${linkIndex}: ${href}`);\n        // Validate HTTP status\n        if (status) {\n          expect(status).to.not.be.oneOf([400, 401, 403, 404, 500, 502, 503]);\n          expect(status).to.be.oneOf([200, 301, 302]);\n        } else {\n          cy.log(`Empty HTTP response for ${href}, skipping...`);\n        }\n        cy.validateElement('[data-cy=\"home-page-main-menu\"]');\n      });\n    });\n  });\n});",
+              "err": {
+                "message": "CypressError: `cy.visit()` failed trying to load:\n\nhttps://www.preprod.ryses.es/\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: ESOCKETTIMEDOUT\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Testing home page main menu...`",
+                "estack": "CypressError: `cy.visit()` failed trying to load:\n\nhttps://www.preprod.ryses.es/\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: ESOCKETTIMEDOUT\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Testing home page main menu...`\n    at <unknown> (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:132340:74)\n    at visitFailedByErr (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:131730:12)\n    at <unknown> (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:132339:11)\n    at tryCatcher (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1546:18)\n    at Promise._settlePromise0 (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1591:10)\n    at Promise._settlePromises (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1667:18)\n    at _drainQueueStep (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:2377:12)\n    at _drainQueue (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:2370:9)\n    at Async._drainQueues (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:2386:5)\n    at Async.drainQueues (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:2256:14)\nFrom Your Spec Code:\n    at Context.eval (webpack://cypress-automation/./cypress/e2e/Standalones/FO/homePageMainMenuListing.js:14:19)\n\nFrom Node.js Internals:\n  Error: ESOCKETTIMEDOUT\n      at ClientRequest.<anonymous> (<embedded>:290:108455)\n      at Object.onceWrapper (node:events:632:28)\n      at ClientRequest.emit (node:events:518:28)\n      at TLSSocket.emitRequestTimeout (node:_http_client:849:9)\n      at Object.onceWrapper (node:events:632:28)\n      at TLSSocket.emit (node:events:530:35)\n      at Socket._onTimeout (node:net:595:8)\n      at listOnTimeout (node:internal/timers:581:17)\n      at process.processTimers (node:internal/timers:519:7)",
+                "diff": null
+              },
+              "uuid": "d49147df-fbc2-4803-96ff-84650ecb3cf5",
+              "parentUUID": "7fa2a9cc-bf10-4186-bdf1-12c78ecabd31",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "d49147df-fbc2-4803-96ff-84650ecb3cf5"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 10169,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

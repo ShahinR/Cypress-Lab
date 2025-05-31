@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-05-06T07:53:46.233Z",
+    "end": "2025-05-06T07:57:12.232Z",
+    "duration": 205999,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "00bf79b5-8218-45f9-8be8-eedb1820e77a",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/checkoutCheck.js",
+      "file": "cypress/e2e/Standalones/FO/checkoutCheck.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "bc21b6aa-d521-4fe9-9b21-ef3dd9df3df3",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 50550,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutCheck.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "919c14ef-801a-4ab5-a569-ccefda72cd16",
+              "parentUUID": "bc21b6aa-d521-4fe9-9b21-ef3dd9df3df3",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "919c14ef-801a-4ab5-a569-ccefda72cd16"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 50550,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "988c9767-3137-4150-a41e-e86d20d9f0fc",
+          "title": "Validating BANK CHECK checkout process",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Proceeding with checkout on macbook-15",
+              "fullTitle": "Validating BANK CHECK checkout process Proceeding with checkout on macbook-15",
+              "timedOut": null,
+              "duration": 154776,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutCheck.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    cy.addShippingAddress();\n    cy.addProductToBasket();\n    cy.productSizer();\n    cy.basketValidation();\n    cy.selectShippingMethod(store);\n    cy.passiveCheckoutCheck(store);\n  });\n});",
+              "err": {},
+              "uuid": "979d6cd0-a9d4-491f-b110-a5376c6526b5",
+              "parentUUID": "988c9767-3137-4150-a41e-e86d20d9f0fc",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "979d6cd0-a9d4-491f-b110-a5376c6526b5"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 154776,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

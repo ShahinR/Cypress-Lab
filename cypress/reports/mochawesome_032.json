@@ -1,0 +1,185 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-03-03T18:30:05.934Z",
+    "end": "2025-03-03T18:31:56.183Z",
+    "duration": 110249,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "41ffef2b-5e94-4984-a521-aa66c84a47be",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/customerLogin.js",
+      "file": "cypress/e2e/Standalones/FO/customerLogin.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4fef373b-ba06-4e81-8721-0e1257662510",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 49047,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/customerLogin.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "2e80de5a-857f-4c4a-bd82-929b6e899c73",
+              "parentUUID": "4fef373b-ba06-4e81-8721-0e1257662510",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "2e80de5a-857f-4c4a-bd82-929b6e899c73"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 49047,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "ff9e6456-7d57-4f9d-8c72-cc002e7e7a72",
+          "title": "customerLogin.js : call nuxt front-office",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Warm up the client profile text inputs and activate its account on macbook-15",
+              "fullTitle": "customerLogin.js : call nuxt front-office Warm up the client profile text inputs and activate its account on macbook-15",
+              "timedOut": null,
+              "duration": 25114,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/customerLogin.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store + '/login?mode=connection', {\n      responseTimeout: 30000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.validateElement('[data-cy=customer-registration]').get('[data-cy=customer-registration]').click({\n      force: true\n    }).url().should('contain', 'login?mode=connection');\n    cy.validateElement('[data-cy=submit] > .c-btn').get('[data-cy=submit] > .c-btn').click({\n      force: true\n    }).wait(3000);\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "2a34a9c0-80d0-4dbc-b54b-d43b06999ca4",
+              "parentUUID": "ff9e6456-7d57-4f9d-8c72-cc002e7e7a72",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Enter client User/Pass on macbook-15 and login",
+              "fullTitle": "customerLogin.js : call nuxt front-office Enter client User/Pass on macbook-15 and login",
+              "timedOut": null,
+              "duration": 20093,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/customerLogin.js.mp4\"",
+              "code": "cy.get(\"[data-cy=header-tool--account]\").first().click();\n// Retrieve credentials from login.json\ncy.readFile(\"cypress/fixtures/login.json\").then(credentials => {\n  cy.validateElement('[data-cy=\"customer-email\"]').get('[data-cy=\"customer-email\"]').type(\"dummy\").wait(1000).clear().should(\"be.empty\").type(credentials.custom_email).should(\"have.value\", credentials.custom_email);\n  // Customer password input\n  cy.validateElement('[data-cy=\"customer-password\"]').get('[data-cy=\"customer-password\"]').type(\"dummy\").clear().should(\"be.empty\").type(credentials.custom_password).should(\"have.value\", credentials.custom_password);\n  // Submit and validate login\n  cy.url().should(\"contain\", \"login\");\n  cy.validateElement(\"[data-cy=submit]\").get(\"[data-cy=submit]\").click({\n    force: true\n  });\n  // Use the stored store value for userLastConnectionDateAndStore\n  cy.get('@currentStore').then(store => {\n    cy.userLastConnectionDateAndStore(store);\n  });\n  cy.get(\".c-form-message--error\").should(\"not.exist\");\n  // Login API call validation\n  cy.intercept(\"GET\", \"**/v4/secure/account/addresses\").as(\"securedAddressesApiResponse\");\n  cy.url().should(\"contain\", \"/account/history\");\n});",
+              "err": {},
+              "uuid": "10b3bb1c-71fc-4211-a40c-1573aacd14c3",
+              "parentUUID": "ff9e6456-7d57-4f9d-8c72-cc002e7e7a72",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Display login error message if user enters bad credentials on macbook-15",
+              "fullTitle": "customerLogin.js : call nuxt front-office Display login error message if user enters bad credentials on macbook-15",
+              "timedOut": null,
+              "duration": 15302,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/customerLogin.js.mp4\"",
+              "code": "cy.get(\"[data-cy=header-tool--account]\").first().click();\n// Invalid login credentials\ncy.validateElement('[data-cy=\"customer-email\"]').get('[data-cy=\"customer-email\"]').type('dummy').clear().wait(1000).type('thisaccountdoesnotexist@neverhood.com');\ncy.validateElement('[data-cy=\"customer-password\"]').get('[data-cy=\"customer-password\"]').type('whattheheck!!');\n// Submit and validate error message\ncy.validateElement('[data-cy=submit]').get('[data-cy=submit]').click({\n  force: true\n});\ncy.get('.c-form-message--error').should('exist');",
+              "err": {},
+              "uuid": "8474b867-b2aa-492c-873a-1afd26322f67",
+              "parentUUID": "ff9e6456-7d57-4f9d-8c72-cc002e7e7a72",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "2a34a9c0-80d0-4dbc-b54b-d43b06999ca4",
+            "10b3bb1c-71fc-4211-a40c-1573aacd14c3",
+            "8474b867-b2aa-492c-873a-1afd26322f67"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 60509,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

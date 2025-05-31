@@ -1,0 +1,186 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-04-30T07:42:53.222Z",
+    "end": "2025-04-30T07:46:19.533Z",
+    "duration": 206311,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5a48ae96-0628-4fc4-8622-1149bacef438",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/checkoutBackOfficeVoucher.js",
+      "file": "cypress/e2e/Standalones/FO/checkoutBackOfficeVoucher.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0ca31c77-eaf1-40d4-9dc3-4d8e224a6eb5",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 51509,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucher.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "e3f0f95c-d3e8-498c-b5e5-150efee1f905",
+              "parentUUID": "0ca31c77-eaf1-40d4-9dc3-4d8e224a6eb5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "e3f0f95c-d3e8-498c-b5e5-150efee1f905"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 51509,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "b4389b55-cf36-4913-b1dc-12d6a3223cd9",
+          "title": "This test will validate shipping addresse block based on it's store for",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new delivery address in a customer profile on macbook-15",
+              "fullTitle": "This test will validate shipping addresse block based on it's store for Add a new delivery address in a customer profile on macbook-15",
+              "timedOut": null,
+              "duration": 51662,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucher.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false\n    }, {\n      responseTimeout: 10000\n    }, {\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.visit(store + '/account', {\n      failOnStatusCode: false\n    }, {\n      responseTimeout: 10000\n    }, {\n      followRedirect: true\n    });\n    // Call address block\n    cy.validateElement('a[href=\"/account/address-book\"]');\n    cy.get('a[href=\"/account/address-book\"]').click({\n      force: true\n    });\n    cy.url().should('contain', '/account/address-book');\n    // Add a new addresse\n    cy.validateElement('.c-account-address-book > .c-btn');\n    cy.get('.c-account-address-book > .c-btn').click({\n      force: true\n    });\n    cy.validateElement('[class=\"c-account-form__item c-account-form__right\"]');\n    // Fill-up shipping address based on store and validate\n    cy.get('.c-account-form__item.c-account-form__right').then($ele => {\n      // Check for input field presence\n      if ($ele.find('.c-account-form__input').length > 0) {\n        cy.url().then(url => {\n          // Load shipping info based on the selected store\n          cy.fixture('shippingInfo.json').then(shippingInfo => {\n            let randomPhoneNumber, countryData;\n            if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n              countryData = shippingInfo.FRANCE;\n              randomPhoneNumber = generateRandomPhoneNumber(\"+336\");\n            } else if (url.includes(shippingInfo.SPAIN.storeUrl)) {\n              countryData = shippingInfo.SPAIN;\n              randomPhoneNumber = generateRandomPhoneNumber(\"+346\");\n            } else if (url.includes(shippingInfo.ITALY.storeUrl)) {\n              countryData = shippingInfo.ITALY;\n              randomPhoneNumber = generateRandomPhoneNumber(\"+396\");\n            } else {\n              throw new Error('Unable to determine store URL, check logs...');\n            }\n            fillAddressDetails(\"CypressFirstNameChanged\", \"CypressLastNameChanged\", randomPhoneNumber, `${countryData.address}`, `${countryData.city}`, `${countryData.postalCode}`);\n            cy.validateElement('.c-account-form__submit > .c-btn');\n            cy.get('.c-account-form__submit > .c-btn').click({\n              force: true\n            });\n            cy.url().should(\"contain\", \"/account/address-book?confirm=1\");\n            cy.validateElement('.c-form-message.c-form-message--success.c-form-message--fixed');\n          });\n        });\n      }\n    });\n    // Helper function to generate a random phone number\n    function generateRandomPhoneNumber(prefix) {\n      return `${prefix}${Math.floor(Math.random() * 1000000000).toString().padStart(9, '0')}`;\n    }\n    // Helper function to throw an error if needed\n    function throwError(message) {\n      throw new Error(message);\n    }\n  });\n});",
+              "err": {},
+              "uuid": "6a689370-d6fa-4c47-a695-bd072f727906",
+              "parentUUID": "b4389b55-cf36-4913-b1dc-12d6a3223cd9",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6a689370-d6fa-4c47-a695-bd072f727906"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 51662,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "d47e8b01-a508-4f91-a4e0-7593ad68cedb",
+          "title": "Validating BANK CHECK checkout process",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Checkout an small amounr order only with voucher",
+              "fullTitle": "Validating BANK CHECK checkout process Checkout an small amounr order only with voucher",
+              "timedOut": null,
+              "duration": 100764,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucher.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    cy.visitRandomProductListing(store, {\n      priceRange: 'prices=5~10',\n      category: '/accessoires-c1?'\n    });\n    function selectAvailableSizeFromListing() {\n      cy.get('body').should('be.visible');\n      cy.get('.c-product-thumbnail', {\n        timeout: 20000\n      }).should('be.visible').then($products => {\n        // Exclude Nosto products\n        const validProducts = $products.not('.c-product-list.nosto_element .c-product-thumbnail');\n        if (validProducts.length > 0) {\n          cy.log(`Found ${validProducts.length} valid products, selecting one...`);\n          selectProduct(validProducts).then(() => {\n            cy.log(`Successfully selected a product.`);\n            // Now on product page, proceed with size selection\n            return cy.then(() => {\n              return selectAvailableSizeOrRetry();\n            });\n          });\n        } else {\n          throw new Error('No valid products found in main listing.');\n        }\n      });\n    }\n    function selectProduct(validProducts) {\n      return cy.wrap(validProducts).then($products => {\n        const randomIndex = Math.floor(Math.random() * Math.min(48, $products.length)); // max 48 to avoid Nosto\n        cy.wrap($products.eq(randomIndex)).find('.c-product-thumbnail__img-wrapper').should('be.visible').click({\n          force: true\n        });\n      });\n    }\n    function selectAvailableSizeOrRetry() {\n      return cy.get('body').then($body => {\n        cy.wait(2000); /* TO KEEP FOR CI TESTS */\n        // OOS email input check\n        const oosInput = $body.find('.c-product-sizer-oos__email-input');\n        if (oosInput.length > 0 && Cypress.$(oosInput).is(':visible')) {\n          cy.log('OOS email input visible. Going back and selecting another product...');\n          cy.go('back');\n          return selectAvailableSizeFromListing();\n        }\n        // Modal check\n        if ($body.find('.c-modal-simple:visible').length > 0) {\n          cy.log('Modal appeared. Going back and selecting another product...');\n          cy.go('back');\n          return selectAvailableSizeFromListing();\n        }\n        // Out of stock message check\n        if ($body.find('.c-product-sizer-oos:visible').length > 0) {\n          cy.log('Product out of stock. Going back and selecting another product...');\n          cy.go('back');\n          return selectAvailableSizeFromListing();\n        }\n        // Side panel check\n        return cy.get('.c-product__side', {\n          timeout: 20000\n        }).then($sidePanel => {\n          if ($sidePanel.length === 0) {\n            cy.log('Product page did not load correctly. Going back and selecting another product...');\n            cy.go('back');\n            return selectAvailableSizeFromListing();\n          }\n          const hasSizeOptions = $sidePanel.find('.c-product-sizer__list').length > 0;\n          if (hasSizeOptions) {\n            return selectAndAddToBasket();\n          } else {\n            return addToBasket();\n          }\n        });\n      });\n    }\n    function selectAndAddToBasket() {\n      cy.log('Selecting available size...');\n      cy.wait(2000); /* TO KEEP FOR CI TESTS */\n      return cy.get('[data-cy=size-chart] > [data-cy=product-size-chart]', {\n        timeout: 20000\n      }).should('exist').then(() => {\n        return cy.get('.c-option:not(.c-option--oos)', {\n          timeout: 20000\n        }).then($sizes => {\n          if ($sizes.length > 0) {\n            cy.wrap($sizes.first()).click();\n            return addToBasket();\n          } else {\n            cy.log('All sizes out of stock. Going back and selecting another product...');\n            cy.go('back');\n            return selectAvailableSizeFromListing();\n          }\n        });\n      });\n    }\n    function addToBasket() {\n      cy.log('Adding product to basket...');\n      cy.wait(2000); /* TO KEEP FOR CI TESTS */\n      return cy.get('[data-cy=\"add-to-basket\"]', {\n        timeout: 20000\n      }).eq(0).should('exist').should('be.visible').click({\n        force: true\n      }).then(() => {\n        cy.get('[data-cy=basket-count]', {\n          timeout: 20000\n        }).should('not.be.empty');\n        cy.log('Product successfully added to the basket.');\n      });\n    }\n    selectAvailableSizeFromListing(store);\n    cy.basketValidation(store);\n    cy.selectShippingMethod(store);\n    cy.visit(store + \"/checkout/payment\", {\n      failOnStatusCode: false,\n      followRedirect: true\n    });\n  });\n});",
+              "err": {},
+              "uuid": "d3f00b66-6db8-4424-9b8a-6251f16eb6a8",
+              "parentUUID": "d47e8b01-a508-4f91-a4e0-7593ad68cedb",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d3f00b66-6db8-4424-9b8a-6251f16eb6a8"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 100764,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

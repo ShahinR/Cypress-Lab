@@ -1,0 +1,151 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 1,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-05-21T10:19:16.385Z",
+    "end": "2025-05-21T10:21:32.835Z",
+    "duration": 136450,
+    "testsRegistered": 2,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "449f8707-31c8-4e1d-a091-b3d9395cca25",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/hybridcheckoutGiftCardAndFCC.js",
+      "file": "cypress/e2e/Standalones/FO/hybridcheckoutGiftCardAndFCC.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "9009e8be-bb12-41e3-8afd-2e9a2b9c6c0d",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 51682,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/hybridcheckoutGiftCardAndFCC.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "e9ee941b-55e4-47ed-a710-948bdd70710b",
+              "parentUUID": "9009e8be-bb12-41e3-8afd-2e9a2b9c6c0d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "e9ee941b-55e4-47ed-a710-948bdd70710b"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 51682,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "5b2d0c82-1c05-4812-87e3-257dba3d87d0",
+          "title": "Validate hybrid gift card checkout process and GC + frictionless payment",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Navigate and test checkout process on viewport: macbook-15",
+              "fullTitle": "Validate hybrid gift card checkout process and GC + frictionless payment Navigate and test checkout process on viewport: macbook-15",
+              "timedOut": null,
+              "duration": 83889,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": "[\n  \"../screenshots/hybridcheckoutGiftCardAndFCC.js/Validate hybrid gift card checkout process and GC + frictionless payment -- Navigate and test checkout process on viewport macbook-15 (failed).png\",\n  \"../videos/hybridcheckoutGiftCardAndFCC.js.mp4\"\n]",
+              "code": "cy.fixture('shippingInfo.json').then(({\n  FRANCE\n}) => {\n  cy.fixture('stores').then(stores => {\n    // Filter stores to only include the FRANCE store (only store available for this test)\n    const franceStores = stores.filter(store => store.includes(FRANCE.storeUrl));\n    franceStores.forEach(store => {\n      cy.visit(store, {\n        failOnStatusCode: false,\n        responseTimeout: 10000,\n        followRedirect: true\n      });\n      cy.acceptCookies();\n      cy.customLogin();\n      cy.addShippingAddress();\n      cy.listingApiCalls();\n      cy.commonApiInterception();\n      Cypress._.times(Cypress.env('numberOfRuns'), () => cy.basketCreationProcess({\n        store\n      }));\n      cy.visit(store + '/account', {\n        failOnStatusCode: false,\n        responseTimeout: 10000,\n        followRedirect: true\n      });\n      // Activate gift card (only once here)\n      for (let i = 0; i < 2; i++) {\n        activateGiftCardPinCode();\n      }\n      // Proceed with checkout after gift card is applied\n      cy.basketValidation();\n      cy.selectShippingMethod();\n      cy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\n      cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n      cy.validateVoucherSelection();\n      cy.creditVoucherPayment();\n      cy.validateVoucherPaymentConfirmation();\n    });\n  });\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 31550ms: expected '<input#giftCardCode>' to have value 'ZD8-6BB-Q6S-NN4', but the value was 'D86-BBQ-6SN-N4'",
+                "estack": "AssertionError: Timed out retrying after 31550ms: expected '<input#giftCardCode>' to have value 'ZD8-6BB-Q6S-NN4', but the value was 'D86-BBQ-6SN-N4'\n    at Context.eval (webpack://cypress-automation/./cypress/e2e/Standalones/FO/hybridcheckoutGiftCardAndFCC.js:54:3)\n    at getRet (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:119616:20)\n    at tryCatcher (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise.attempt.Promise.try (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:4285:29)\n    at Context.thenFn (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:119627:66)\n    at Context.then (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:119878:21)\n    at wrapped (https://www.preprod.laboutiqueofficielle.com/__cypress/runner/cypress_runner.js:140173:19)",
+                "diff": "- 'D86-BBQ-6SN-N4'\n+ 'ZD8-6BB-Q6S-NN4'\n"
+              },
+              "uuid": "51cadbac-961c-460d-97c9-7f97eeca5cae",
+              "parentUUID": "5b2d0c82-1c05-4812-87e3-257dba3d87d0",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "51cadbac-961c-460d-97c9-7f97eeca5cae"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 83889,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

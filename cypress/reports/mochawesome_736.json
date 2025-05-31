@@ -1,0 +1,166 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-04-30T16:34:31.708Z",
+    "end": "2025-04-30T16:41:27.493Z",
+    "duration": 415785,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "2d538563-a82f-49ed-a78b-7c4185fa92a9",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/checkoutBackOfficeVoucher.js",
+      "file": "cypress/e2e/Standalones/FO/checkoutBackOfficeVoucher.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1c64c2f5-51b1-421f-b190-f12053dda54e",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 53613,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucher.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "6d357d2a-f7a1-428f-88f4-ae5a10fa47b3",
+              "parentUUID": "1c64c2f5-51b1-421f-b190-f12053dda54e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6d357d2a-f7a1-428f-88f4-ae5a10fa47b3"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 53613,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "9af79cdf-304c-473f-b6e0-35d847d02204",
+          "title": "Validate checkout with a voucher created from BO && Combine it with another payment method",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Checkout an small amounr order only with voucher",
+              "fullTitle": "Validate checkout with a voucher created from BO && Combine it with another payment method Checkout an small amounr order only with voucher",
+              "timedOut": null,
+              "duration": 147272,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucher.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin(store);\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    cy.addShippingAddress();\n    /**/\n    cy.visitRandomProductListing(store, {\n      priceRange: 'prices=5~10',\n      category: '/accessoires-c1?'\n    });\n    function selectAvailableSizeFromListing(index = 0) {\n      cy.get('body').should('be.visible');\n      cy.get('.c-product-thumbnail', {\n        timeout: 20000\n      }).should('be.visible').then($products => {\n        // Filter out Nosto products\n        const validProducts = $products.not('.c-product-list.nosto_element .c-product-thumbnail');\n        if (validProducts.length === 0) {\n          throw new Error('No valid products found in main listing.');\n        }\n        if (index >= 4 || index >= validProducts.length) {\n          throw new Error('No available product with sizes after trying 4 options.');\n        }\n        cy.log(`Trying product at index ${index}`);\n        selectProduct(validProducts, index).then(() => {\n          return selectAvailableSizeOrRetry(index);\n        });\n      });\n    }\n    function selectProduct(validProducts, index) {\n      return cy.wrap(validProducts).then($products => {\n        cy.wrap($products.eq(index)).find('.c-product-thumbnail__img-wrapper').should('be.visible').click({\n          force: true\n        });\n      });\n    }\n    function selectAvailableSizeOrRetry(index) {\n      cy.wait(2000); /* TO KEEP FOR CI TESTS */\n      return cy.get('body', {\n        timeout: 20000\n      }).then($body => {\n        if ($body.find('.c-product-sizer-oos').length > 0 && $body.find('.c-product-sizer-oos').is(':visible')) {\n          cy.log('Out-of-stock size detected. Trying next product...');\n          cy.go('back');\n          return selectAvailableSizeFromListing(index + 1);\n        }\n        // Check modals\n        if ($body.find('.c-modal-simple:visible').length > 0) {\n          cy.log('Modal detected. Trying next product...');\n          cy.go('back');\n          return selectAvailableSizeFromListing(index + 1);\n        }\n        // Check OOS message\n        if ($body.find('.c-product-sizer-oos:visible').length > 0) {\n          cy.log('Out-of-stock message detected. Trying next product...');\n          cy.go('back');\n          return selectAvailableSizeFromListing(index + 1);\n        }\n        // Check if product page loaded correctly\n        return cy.get('.c-product__side', {\n          timeout: 20000\n        }).then($sidePanel => {\n          if ($sidePanel.length === 0) {\n            cy.log('Product page did not load. Trying next product...');\n            cy.go('back');\n            return selectAvailableSizeFromListing(index + 1);\n          }\n          const hasSizeOptions = $sidePanel.find('.c-product-sizer__list').length > 0;\n          if (hasSizeOptions) {\n            return selectAndAddToBasket(index);\n          } else {\n            return addToBasket();\n          }\n        });\n      });\n    }\n    function selectAndAddToBasket(index) {\n      cy.log('Selecting available size...');\n      cy.wait(2000); /* TO KEEP FOR CI TESTS */\n      return cy.get('[data-cy=size-chart] > [data-cy=product-size-chart]', {\n        timeout: 20000\n      }).should('exist').then(() => {\n        return cy.get('.c-option:not(.c-option--oos)', {\n          timeout: 20000\n        }).then($sizes => {\n          if ($sizes.length > 0) {\n            cy.wrap($sizes.first()).click();\n            return addToBasket();\n          } else {\n            cy.log('All sizes out of stock. Trying next product...');\n            cy.go('back');\n            return selectAvailableSizeFromListing(index + 1);\n          }\n        });\n      });\n    }\n    function addToBasket() {\n      cy.log('Adding product to basket...');\n      cy.wait(2000); /* TO KEEP FOR CI TESTS */\n      return cy.get('[data-cy=\"add-to-basket\"]', {\n        timeout: 20000\n      }).eq(0).should('exist').should('be.visible').click({\n        force: true\n      }).then(() => {\n        cy.get('[data-cy=basket-count]', {\n          timeout: 20000\n        }).should('not.be.empty');\n        cy.log('Product successfully added to the basket.');\n      });\n    }\n    selectAvailableSizeFromListing();\n    /**/\n    cy.basketValidation();\n    cy.selectShippingMethod();\n    cy.intercept('GET', '**/v4/secure/checkout/payments/available/**').as('basketDataValidation');\n    cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n    validateVoucherSelection();\n    cy.creditVoucherPayment();\n    validateVoucherPaymentConfirmation();\n  });\n});",
+              "err": {},
+              "uuid": "8afffb22-670a-4d9d-a5ef-8f0f92710001",
+              "parentUUID": "9af79cdf-304c-473f-b6e0-35d847d02204",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Checkout with voucher combining with another payment method",
+              "fullTitle": "Validate checkout with a voucher created from BO && Combine it with another payment method Checkout with voucher combining with another payment method",
+              "timedOut": null,
+              "duration": 208984,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutBackOfficeVoucher.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.log('Visiting store');\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    cy.addShippingAddress();\n    cy.addProductToBasket();\n    cy.productSizer();\n    cy.basketValidation();\n    cy.selectShippingMethod();\n    cy.intercept('GET', '**v4/secure/checkout/payments/available/**').as('basketDataValidation');\n    cy.intercept('POST', 'https://stage-data.hipay.com/checkout-data').as('hipayDataValidation');\n    validateVoucherSelection();\n    cy.creditVoucherPayment();\n    validateVoucherPaymentConfirmation();\n  });\n});",
+              "err": {},
+              "uuid": "8b39d758-8efc-45b9-857b-6b67c9907045",
+              "parentUUID": "9af79cdf-304c-473f-b6e0-35d847d02204",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "8afffb22-670a-4d9d-a5ef-8f0f92710001",
+            "8b39d758-8efc-45b9-857b-6b67c9907045"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 356256,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

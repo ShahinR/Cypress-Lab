@@ -1,0 +1,190 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 4,
+    "passes": 3,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-03-03T15:50:40.225Z",
+    "end": "2025-03-03T15:54:07.264Z",
+    "duration": 207039,
+    "testsRegistered": 4,
+    "passPercent": 75,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b4980f38-dce1-4dab-bac7-811582d2cfd1",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/updateClientProfile.js",
+      "file": "cypress/e2e/Standalones/FO/updateClientProfile.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "b6f81ff2-0b94-48aa-b976-6bab4d38d318",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 48873,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/updateClientProfile.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "1519b468-dbfd-47c3-a2f2-2adca33a1414",
+              "parentUUID": "b6f81ff2-0b94-48aa-b976-6bab4d38d318",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "1519b468-dbfd-47c3-a2f2-2adca33a1414"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 48873,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "345c0289-c87b-4885-852d-3cc3ff3a4f96",
+          "title": "Call LBO front-office customers's profile page",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new Address on macbook-15",
+              "fullTitle": "Call LBO front-office customers's profile page Add a new Address on macbook-15",
+              "timedOut": null,
+              "duration": 79750,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": "[\n  \"../screenshots/updateClientProfile.js/Call LBO front-office customers's profile page -- Add a new Address on macbook-15 (failed).png\",\n  \"../videos/updateClientProfile.js.mp4\"\n]",
+              "code": "cy.addShippingAddress();\n// API network capture\ncy.intercept('/v4/secure/account/addresses').as('modifcationApiRes');\n// Address block\ncy.get('.c-account-panel__item--adresses > span').click({\n  force: true\n}).url().should(\"contain\", \"/account/address-book\");\n// Add a new address\ncy.validateElement('[class^=\"c-btn c-btn--primary\"]').get('[class^=\"c-btn c-btn--primary\"]').click({\n  force: true\n}).get('[type=\"radio\"]').first().check({\n  force: true\n});\ncustomerAddressBookAssertionValidations();\n// Last name\ncy.get('#name').click({\n  force: true\n}).type('CypressLastNameModifiedAdd').should('have.value', 'CypressLastNameModifiedAdd');\n// First name\ncy.get('#firstname').click({\n  force: true\n}).type('CypressFirstNameModifiedAdd').should('have.value', 'CypressFirstNameModifiedAdd');\n// Phone\ncy.get('#phone', {\n  timeout: 4000\n}).click({\n  force: true\n}).type('0033765432109').should('have.value', '0033765432109');\n// Determine country and adjust queries accordingly\ncy.fixture('shippingInfo.json').then(shippingInfo => {\n  cy.url().then(url => {\n    let countryData;\n    if (url.includes(shippingInfo.FRANCE.storeUrl)) {\n      countryData = shippingInfo.FRANCE;\n    } else if (url.includes(shippingInfo.SPAIN.storeUrl)) {\n      countryData = shippingInfo.SPAIN;\n    } else if (url.includes(shippingInfo.ITALY.storeUrl)) {\n      countryData = shippingInfo.ITALY;\n    } else {\n      throw new Error('Invalid country URL.');\n    }\n    addShippingAddress(countryData.address2, countryData.city, countryData.postalCode, countryData.flag);\n  });\n});\n// Submit\ncy.validateElement('.c-account-form__submit > .c-btn');\ncy.get('.c-account-form__submit > .c-btn').click({\n  force: true\n}).wait(2000).validateElement('.c-form-message');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 30000ms: Expected to find element: `[type=\"radio\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 30000ms: Expected to find element: `[type=\"radio\"]`, but never found it.\n    at Context.eval (webpack://cypress-automation/./cypress/e2e/Standalones/FO/updateClientProfile.js:87:9)",
+                "diff": null
+              },
+              "uuid": "5827c864-0277-4daa-b97d-7e0e337c487a",
+              "parentUUID": "345c0289-c87b-4885-852d-3cc3ff3a4f96",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Delete the newly added Address on macbook-15",
+              "fullTitle": "Call LBO front-office customers's profile page Delete the newly added Address on macbook-15",
+              "timedOut": null,
+              "duration": 36904,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/updateClientProfile.js.mp4\"",
+              "code": "// Access client's Addresss\ncy.validateElement('.c-account-panel__item--adresses > span').get('.c-account-panel__item--adresses > span').click({\n  force: true\n});\n// Delete an existing address (not default)\ncy.get('[class=\"c-account-address-book\"]').then($ele => {\n  cy.get('.c-account-address-book:not(.c-account-address-book__defaultAddress)').then($el => {\n    $el.find('[class=\"c-account-address-book__btn\"]').trigger('click');\n    cy.validateElement('.c-btn--grey');\n    cy.get('.c-btn--grey').click({\n      force: true\n    });\n    cy.get('.c-modal__close > svg > path').click({\n      force: true\n    });\n  });\n});",
+              "err": {},
+              "uuid": "3d765553-9ac0-48d6-a564-c2eded590571",
+              "parentUUID": "345c0289-c87b-4885-852d-3cc3ff3a4f96",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Modify customer basic informations on macbook-15",
+              "fullTitle": "Call LBO front-office customers's profile page Modify customer basic informations on macbook-15",
+              "timedOut": null,
+              "duration": 40631,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/updateClientProfile.js.mp4\"",
+              "code": "// Open client's profile\ncy.url().should(\"contain\", \"/account/history\");\ncy.get('.c-account-panel__item--info > span').click({\n  force: true\n}).url().should(\"contain\", \"/account/modify\");\ncustomerProfileAssertionValidations();\n// Last name\ncy.delayedType(\"[data-cy=customer-name]\", \"dummy\");\ncy.get('[data-cy=customer-name]').clear({\n  force: true\n}).type('CypressLastNameModified', {\n  force: true\n}).should('have.value', 'CypressLastNameModified');\n// First name\ncy.delayedType(\"[data-cy=customer-firstname]\", \"dummy\");\ncy.get('[data-cy=customer-firstname]').clear({\n  force: true\n}).type('CypressFirstNameModified', {\n  force: true\n}).should('have.value', 'CypressFirstNameModified');\n// Date of birth\ncy.get(\"#information-birthdate__day\").select(\"15\").should('have.value', '15').get(\"#information-birthdate__month\").select(\"03\").should('have.value', '03').get(\"#information-birthdate__year\").select(\"1990\").should('have.value', '1990');\n// Generate a random email address && update login.json with new credentials\nconst CUSTOM_EMAIL = `clientcypresslbo${Cypress._.random(0, 1e6)}@gmail.com`;\ncy.readFile(\"cypress/fixtures/login.json\").then(data => {\n  data.custom_email = CUSTOM_EMAIL;\n  data.custom_password = \"0@x?Ci4?0\";\n  cy.validateElement('[data-cy=customer-email]').get('[data-cy=\"customer-email\"]').clear().type(CUSTOM_EMAIL, {\n    force: true\n  }).writeFile(\"cypress/fixtures/login.json\", JSON.stringify(data));\n});\n// Validate API caching et response status code\ncy.validateElement('.c-account-form__submit > .c-btn').get('.c-account-form__submit > .c-btn').click({\n  force: true\n}).wait(2000) /* TO KEEP FOR CI TESTS */.validateElement('.c-form-message');",
+              "err": {},
+              "uuid": "a0cd353a-2526-4601-8816-4bd9c1baea44",
+              "parentUUID": "345c0289-c87b-4885-852d-3cc3ff3a4f96",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "3d765553-9ac0-48d6-a564-c2eded590571",
+            "a0cd353a-2526-4601-8816-4bd9c1baea44"
+          ],
+          "failures": [
+            "5827c864-0277-4daa-b97d-7e0e337c487a"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 157285,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-05-21T06:18:06.511Z",
+    "end": "2025-05-21T06:21:19.099Z",
+    "duration": 192588,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "0c67052b-912b-442b-aea1-7a6cab400499",
+      "title": "",
+      "fullFile": "cypress/e2e/Standalones/FO/checkoutWishlistExistingUser.js",
+      "file": "cypress/e2e/Standalones/FO/checkoutWishlistExistingUser.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "616493b5-79e8-49b3-9bae-6d4203cfeaec",
+          "title": "addNewAccount.js: call LBO front-office subscription form, env de test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add a new subscription (client) process on macbook-15",
+              "fullTitle": "addNewAccount.js: call LBO front-office subscription form, env de test Add a new subscription (client) process on macbook-15",
+              "timedOut": null,
+              "duration": 47814,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutWishlistExistingUser.js.mp4\"",
+              "code": "cy.fixture('stores').then(stores => {\n  stores.forEach(store => {\n    cy.visit(store);\n    cy.acceptCookies();\n    cy.visit(`${store}/login?mode=connection`, {\n      failOnStatusCode: false\n    });\n    cy.validateElement('[data-cy=customer-registration]').wait(2000);\n    cy.get('[data-cy=customer-registration]').click({\n      force: true\n    });\n    cy.url().should('contain', 'login?mode=connection');\n    // Customer registration\n    cy.acceptCookies();\n    cy.customInfo();\n    // Confirm subscription\n    cy.validateElement('[data-cy=submit] > .c-btn');\n    cy.get('[data-cy=submit] > .c-btn').click({\n      force: true\n    });\n    cy.wait(3000); /* TO KEEP FOR CI TESTS */\n    cy.validateElement('.c-form-message');\n  });\n});",
+              "err": {},
+              "uuid": "9db29a24-e5df-417b-b320-a31abd504c5b",
+              "parentUUID": "616493b5-79e8-49b3-9bae-6d4203cfeaec",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "9db29a24-e5df-417b-b320-a31abd504c5b"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 47814,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "dde476c5-1291-4d2e-b500-ccd7988fb264",
+          "title": "This test will validate the entire process of adding products to the wishlist",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Add random products to the wishlist in both possible ways: directly from the listing && from the product sheet on macbook-15",
+              "fullTitle": "This test will validate the entire process of adding products to the wishlist Add random products to the wishlist in both possible ways: directly from the listing && from the product sheet on macbook-15",
+              "timedOut": null,
+              "duration": 144106,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"../videos/checkoutWishlistExistingUser.js.mp4\"",
+              "code": "cy.fixture(\"stores\").then(stores => {\n  stores.forEach(store => {\n    cy.visit(store, {\n      failOnStatusCode: false,\n      responseTimeout: 10000,\n      followRedirect: true\n    });\n    cy.acceptCookies();\n    cy.customLogin();\n    cy.listingApiCalls();\n    cy.commonApiInterception();\n    // Navigate to a valid product listing\n    cy.fixture(\"shippingInfo.json\").then(shippingInfo => {\n      cy.addShippingAddress();\n      // Define store && product indexes\n      cy.url().then(url => {\n        const countryConfig = {\n          FRANCE: {\n            storeUrl: shippingInfo.FRANCE.storeUrl,\n            buttonIndex: 0,\n            productIndex: 3\n          },\n          SPAIN: {\n            storeUrl: shippingInfo.SPAIN.storeUrl,\n            buttonIndex: 1,\n            productIndex: 4\n          },\n          ITALY: {\n            storeUrl: shippingInfo.ITALY.storeUrl,\n            buttonIndex: 2,\n            productIndex: 5\n          }\n        };\n        // Determine the country and execute logic\n        let countryFound = false;\n        for (const [country, config] of Object.entries(countryConfig)) {\n          if (url.includes(config.storeUrl)) {\n            cy.visitRandomProductListing(store);\n            cy.wait(3000); /* To keep for CI tests */\n            cy.addProductToWishlist(config.buttonIndex, config.productIndex);\n            countryFound = true;\n            break;\n          }\n        }\n        if (!countryFound) {\n          throw new Error(\"Invalid country URL.\");\n        }\n      });\n      // Navigate to wishlist page\n      cy.get(\".c-header-tools__item.c-header-tools__item--favorite\").find(\".c-header-tools__button\").should(\"have.attr\", \"href\").then(wishlistHref => {\n        cy.visit(`${store}${wishlistHref}`, {\n          failOnStatusCode: false,\n          responseTimeout: 10000,\n          followRedirect: true\n        });\n      });\n      cy.validateElement(\".c-favorites__list\");\n      cy.validateElement(\".c-favorite-product__remove\");\n      // Add two products to basket from wishlist\n      cy.get(\"body\").then($body => {\n        const dropdownSelectorBase = \".c-favorite-product__action > .u-1\\\\/3 > .c-select > div > #size\";\n        if ($body.find(dropdownSelectorBase).length > 0) {\n          cy.get(\".c-favorite-product\").each((_, index) => {\n            if (index < 2) {\n              const specificDropdownSelector = `:nth-child(${index + 1}) > ${dropdownSelectorBase}`;\n              // Select the first available option in the dropdown\n              cy.get(specificDropdownSelector).then($dropdown => {\n                if ($dropdown.length > 0) {\n                  cy.wrap($dropdown).find(\"option\").then($options => {\n                    if ($options.length > 1) {\n                      const firstOption = $options.eq(1).val();\n                      cy.wrap($dropdown).select(firstOption);\n                      cy.wrap($dropdown).should(\"have.value\", firstOption);\n                      const addToBasketButtonSelector = `:nth-child(${index + 1}) .c-btn.c-btn--primary.c-btn--large`;\n                      cy.get(addToBasketButtonSelector).eq(1).click({\n                        force: true\n                      });\n                      cy.wait(4000); /* To keep for CI tests */\n                      const addToBasketButtonSelector2 = `:nth-child(${index + 2}) .c-btn.c-btn--primary.c-btn--large`;\n                      cy.get(addToBasketButtonSelector2).eq(1).click({\n                        force: true\n                      });\n                      cy.wait(4000); /* To keep for CI tests */\n                    } else {\n                      cy.log(`Not enough options in dropdown ${index + 1}`);\n                    }\n                  });\n                }\n              });\n            }\n          });\n        }\n      });\n      cy.basketValidation(store);\n      cy.selectShippingMethod(store);\n      cy.visit(store + \"/checkout/payment\", {\n        failOnStatusCode: false,\n        followRedirect: true\n      });\n      cy.passiveCheckoutCheck(store);\n    });\n  });\n});",
+              "err": {},
+              "uuid": "cb3981d2-48b7-478a-8e47-7512497804f5",
+              "parentUUID": "dde476c5-1291-4d2e-b500-ccd7988fb264",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "cb3981d2-48b7-478a-8e47-7512497804f5"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 144106,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Cypress Nuxt Front : Report",
+        "inlineAssets": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
