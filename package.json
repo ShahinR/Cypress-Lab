@@ -19,7 +19,8 @@
   "homepage": "https://github.com/xxxxxx/cypress-automation#readme",
   "devDependencies": {
     "@eslint/js": "^9.23.0",
-    "cypress": "^14.3.2",
+    "cypress": "^14.4.0",
+    "cypress-browser-extension-plugin": "^0.1.0",
     "cypress-fail-on-console-error": "^2.1.2",
     "cypress-failed-log": "^2.9.5",
     "cypress-iframe": "^1.0.1",

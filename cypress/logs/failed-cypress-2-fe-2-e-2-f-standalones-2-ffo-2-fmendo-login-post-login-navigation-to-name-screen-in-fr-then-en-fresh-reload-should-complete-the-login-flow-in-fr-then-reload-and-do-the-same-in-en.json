@@ -1,0 +1,16 @@
+{
+  "specName": "cypress%2Fe2e%2FStandalones%2FFO%2FmendoLogin.js",
+  "title": "should complete the login flow in FR, then reload and do the same in EN",
+  "suiteName": "Post-login navigation to name screen in FR then EN (fresh reload)",
+  "testName": "Post-login navigation to name screen in FR then EN (fresh reload) should complete the login flow in FR, then reload and do the same in EN",
+  "testError": "Cannot read properties of undefined (reading 'forEach')",
+  "testCommands": [
+    "get body",
+    "assert expected **<body>** to be **visible**",
+    "assert expected **<body>** to have a length of **1**",
+    "assert expected **<body>** not to be **empty**",
+    "window ",
+    "its .document.readyState",
+    "assert expected **complete** to equal **complete**"
+  ]
+}

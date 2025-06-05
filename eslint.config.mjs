@@ -1,6 +1,6 @@
 /**
- * @author      LBO DevTeam <s.rastgar@laboutiqueofficielle.com>
- * @copyright   Copyright (c) Laboutiqueofficielle
+ * @author      <shahin@codequality.fr>
+ * @copyright   Copyright (c) codequality.fr
  * @license     Proprietary
  */
 
