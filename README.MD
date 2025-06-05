@@ -89,7 +89,3 @@ Here's the parameters list:
 make percy <<< cypress/../<<YOUR_SCRIPT>>.js
 ```
 
-### Percy dashboard
-
-You can find all the Percy's snapshots on the following Dashboard : https://percy.io/cbb17ef2/LBO-Cypress-Percy.
-
